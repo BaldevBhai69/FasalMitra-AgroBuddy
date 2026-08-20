@@ -1,0 +1,507 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
+export interface Database {
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          email: string;
+          username: string;
+          full_name: string | null;
+          phone_number: string | null;
+          state: string;
+          district: string;
+          village_locality: string;
+          latitude: number | null;
+          longitude: number | null;
+          soil_type: string | null;
+          soil_ph: number | null;
+          soil_organic_carbon_pct: number | null;
+          soil_nitrogen_mg_kg: number | null;
+          soil_sand_pct: number | null;
+          soil_silt_pct: number | null;
+          soil_clay_pct: number | null;
+          soil_cec: number | null;
+          soil_data_source: string | null;
+          soil_fetched_at: string | null;
+          preferred_language: 'en' | 'hi' | 'mr' | 'pa' | 'te' | 'ta';
+          preferred_ai_engine: 'gemini' | 'ollama';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          email: string;
+          username: string;
+          full_name?: string | null;
+          phone_number?: string | null;
+          state?: string;
+          district?: string;
+          village_locality?: string;
+          latitude?: number | null;
+          longitude?: number | null;
+          soil_type?: string | null;
+          soil_ph?: number | null;
+          soil_organic_carbon_pct?: number | null;
+          soil_nitrogen_mg_kg?: number | null;
+          soil_sand_pct?: number | null;
+          soil_silt_pct?: number | null;
+          soil_clay_pct?: number | null;
+          soil_cec?: number | null;
+          soil_data_source?: string | null;
+          soil_fetched_at?: string | null;
+          preferred_language?: 'en' | 'hi' | 'mr' | 'pa' | 'te' | 'ta';
+          preferred_ai_engine?: 'gemini' | 'ollama';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          username?: string;
+          full_name?: string | null;
+          phone_number?: string | null;
+          state?: string;
+          district?: string;
+          village_locality?: string;
+          latitude?: number | null;
+          longitude?: number | null;
+          soil_type?: string | null;
+          soil_ph?: number | null;
+          soil_organic_carbon_pct?: number | null;
+          soil_nitrogen_mg_kg?: number | null;
+          soil_sand_pct?: number | null;
+          soil_silt_pct?: number | null;
+          soil_clay_pct?: number | null;
+          soil_cec?: number | null;
+          soil_data_source?: string | null;
+          soil_fetched_at?: string | null;
+          preferred_language?: 'en' | 'hi' | 'mr' | 'pa' | 'te' | 'ta';
+          preferred_ai_engine?: 'gemini' | 'ollama';
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      crop_catalog: {
+        Row: {
+          id: string;
+          name: string;
+          hindi_name: string | null;
+          icon_emoji: string | null;
+          category: string | null;
+          optimal_temperature_min: number | null;
+          optimal_temperature_max: number | null;
+          optimal_soil_moisture_min: number | null;
+          optimal_soil_moisture_max: number | null;
+          optimal_ph_min: number | null;
+          optimal_ph_max: number | null;
+          optimal_nitrogen_min: number | null;
+          optimal_nitrogen_max: number | null;
+          optimal_phosphorus_min: number | null;
+          optimal_phosphorus_max: number | null;
+          optimal_potassium_min: number | null;
+          optimal_potassium_max: number | null;
+          kc_initial: number;
+          kc_mid: number;
+          kc_end: number;
+          duration_days_min: number;
+          duration_days_max: number;
+          water_requirement_mm: number | null;
+          sowing_seasons: string[] | null;
+          growth_stages: Json;
+          general_tips: string[] | null;
+          fertilizer_guide: Json;
+          msp_price_per_quintal: number | null;
+          is_perishable: boolean;
+          storage_duration_days: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          hindi_name?: string | null;
+          icon_emoji?: string | null;
+          category?: string | null;
+          optimal_temperature_min?: number | null;
+          optimal_temperature_max?: number | null;
+          optimal_soil_moisture_min?: number | null;
+          optimal_soil_moisture_max?: number | null;
+          optimal_ph_min?: number | null;
+          optimal_ph_max?: number | null;
+          optimal_nitrogen_min?: number | null;
+          optimal_nitrogen_max?: number | null;
+          optimal_phosphorus_min?: number | null;
+          optimal_phosphorus_max?: number | null;
+          optimal_potassium_min?: number | null;
+          optimal_potassium_max?: number | null;
+          kc_initial?: number;
+          kc_mid?: number;
+          kc_end?: number;
+          duration_days_min: number;
+          duration_days_max: number;
+          water_requirement_mm?: number | null;
+          sowing_seasons?: string[] | null;
+          growth_stages: Json;
+          general_tips?: string[] | null;
+          fertilizer_guide: Json;
+          msp_price_per_quintal?: number | null;
+          is_perishable?: boolean;
+          storage_duration_days?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          hindi_name?: string | null;
+          icon_emoji?: string | null;
+          category?: string | null;
+          optimal_temperature_min?: number | null;
+          optimal_temperature_max?: number | null;
+          optimal_soil_moisture_min?: number | null;
+          optimal_soil_moisture_max?: number | null;
+          optimal_ph_min?: number | null;
+          optimal_ph_max?: number | null;
+          optimal_nitrogen_min?: number | null;
+          optimal_nitrogen_max?: number | null;
+          optimal_phosphorus_min?: number | null;
+          optimal_phosphorus_max?: number | null;
+          optimal_potassium_min?: number | null;
+          optimal_potassium_max?: number | null;
+          kc_initial?: number;
+          kc_mid?: number;
+          kc_end?: number;
+          duration_days_min?: number;
+          duration_days_max?: number;
+          water_requirement_mm?: number | null;
+          sowing_seasons?: string[] | null;
+          growth_stages?: Json;
+          general_tips?: string[] | null;
+          fertilizer_guide?: Json;
+          msp_price_per_quintal?: number | null;
+          is_perishable?: boolean;
+          storage_duration_days?: number | null;
+          created_at?: string;
+        };
+      };
+      farmer_crops: {
+        Row: {
+          id: string;
+          farmer_id: string;
+          crop_catalog_id: string;
+          custom_crop_name: string | null;
+          land_size_acres: number;
+          sowing_date: string;
+          expected_harvest_date: string | null;
+          irrigation_source: 'Borewell' | 'Canal' | 'Drip' | 'Rainfed' | 'Sprinkler' | 'Tube Well' | 'River/Pond' | null;
+          current_status: 'Planning' | 'Sown' | 'Vegetative' | 'Flowering' | 'Harvesting' | 'Harvested';
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          farmer_id: string;
+          crop_catalog_id: string;
+          custom_crop_name?: string | null;
+          land_size_acres: number;
+          sowing_date: string;
+          expected_harvest_date?: string | null;
+          irrigation_source?: 'Borewell' | 'Canal' | 'Drip' | 'Rainfed' | 'Sprinkler' | 'Tube Well' | 'River/Pond' | null;
+          current_status?: 'Planning' | 'Sown' | 'Vegetative' | 'Flowering' | 'Harvesting' | 'Harvested';
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          farmer_id?: string;
+          crop_catalog_id?: string;
+          custom_crop_name?: string | null;
+          land_size_acres?: number;
+          sowing_date?: string;
+          expected_harvest_date?: string | null;
+          irrigation_source?: 'Borewell' | 'Canal' | 'Drip' | 'Rainfed' | 'Sprinkler' | 'Tube Well' | 'River/Pond' | null;
+          current_status?: 'Planning' | 'Sown' | 'Vegetative' | 'Flowering' | 'Harvesting' | 'Harvested';
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      virtual_iot_devices: {
+        Row: {
+          id: string;
+          farmer_crop_id: string;
+          device_name: string;
+          is_simulation_mode: boolean;
+          soil_moisture_pct: number;
+          nitrogen_mg_kg: number;
+          phosphorus_mg_kg: number;
+          potassium_mg_kg: number;
+          soil_ph: number;
+          soil_temperature_c: number;
+          organic_carbon_pct: number | null;
+          electrical_conductivity_ds_m: number | null;
+          last_sync_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          farmer_crop_id: string;
+          device_name?: string;
+          is_simulation_mode?: boolean;
+          soil_moisture_pct?: number;
+          nitrogen_mg_kg?: number;
+          phosphorus_mg_kg?: number;
+          potassium_mg_kg?: number;
+          soil_ph?: number;
+          soil_temperature_c?: number;
+          organic_carbon_pct?: number | null;
+          electrical_conductivity_ds_m?: number | null;
+          last_sync_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          farmer_crop_id?: string;
+          device_name?: string;
+          is_simulation_mode?: boolean;
+          soil_moisture_pct?: number;
+          nitrogen_mg_kg?: number;
+          phosphorus_mg_kg?: number;
+          potassium_mg_kg?: number;
+          soil_ph?: number;
+          soil_temperature_c?: number;
+          organic_carbon_pct?: number | null;
+          electrical_conductivity_ds_m?: number | null;
+          last_sync_at?: string;
+          created_at?: string;
+        };
+      };
+      crop_ai_chats: {
+        Row: {
+          id: string;
+          farmer_crop_id: string;
+          role: 'user' | 'assistant' | 'system';
+          content: string;
+          context_snapshot: Json | null;
+          engine_used: string | null;
+          tokens_used: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          farmer_crop_id: string;
+          role: 'user' | 'assistant' | 'system';
+          content: string;
+          context_snapshot?: Json | null;
+          engine_used?: string | null;
+          tokens_used?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          farmer_crop_id?: string;
+          role?: 'user' | 'assistant' | 'system';
+          content?: string;
+          context_snapshot?: Json | null;
+          engine_used?: string | null;
+          tokens_used?: number | null;
+          created_at?: string;
+        };
+      };
+      weather_cache: {
+        Row: {
+          id: string;
+          latitude: number;
+          longitude: number;
+          forecast_date: string;
+          temperature_max_c: number | null;
+          temperature_min_c: number | null;
+          precipitation_mm: number | null;
+          precipitation_probability_pct: number | null;
+          humidity_mean_pct: number | null;
+          wind_speed_max_kmh: number | null;
+          et0_fao_mm: number | null;
+          weather_code: number | null;
+          soil_moisture_0_7cm: number | null;
+          soil_moisture_7_28cm: number | null;
+          soil_temperature_0_7cm: number | null;
+          fetched_at: string;
+        };
+        Insert: {
+          id?: string;
+          latitude: number;
+          longitude: number;
+          forecast_date: string;
+          temperature_max_c?: number | null;
+          temperature_min_c?: number | null;
+          precipitation_mm?: number | null;
+          precipitation_probability_pct?: number | null;
+          humidity_mean_pct?: number | null;
+          wind_speed_max_kmh?: number | null;
+          et0_fao_mm?: number | null;
+          weather_code?: number | null;
+          soil_moisture_0_7cm?: number | null;
+          soil_moisture_7_28cm?: number | null;
+          soil_temperature_0_7cm?: number | null;
+          fetched_at?: string;
+        };
+        Update: {
+          id?: string;
+          latitude?: number;
+          longitude?: number;
+          forecast_date?: string;
+          temperature_max_c?: number | null;
+          temperature_min_c?: number | null;
+          precipitation_mm?: number | null;
+          precipitation_probability_pct?: number | null;
+          humidity_mean_pct?: number | null;
+          wind_speed_max_kmh?: number | null;
+          et0_fao_mm?: number | null;
+          weather_code?: number | null;
+          soil_moisture_0_7cm?: number | null;
+          soil_moisture_7_28cm?: number | null;
+          soil_temperature_0_7cm?: number | null;
+          fetched_at?: string;
+        };
+      };
+      mandi_prices: {
+        Row: {
+          id: string;
+          state: string;
+          district: string;
+          market_name: string;
+          commodity: string;
+          variety: string | null;
+          arrival_date: string;
+          min_price_per_quintal: number;
+          max_price_per_quintal: number;
+          modal_price_per_quintal: number;
+          source: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          state: string;
+          district: string;
+          market_name: string;
+          commodity: string;
+          variety?: string | null;
+          arrival_date: string;
+          min_price_per_quintal: number;
+          max_price_per_quintal: number;
+          modal_price_per_quintal: number;
+          source?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          state?: string;
+          district?: string;
+          market_name?: string;
+          commodity?: string;
+          variety?: string | null;
+          arrival_date?: string;
+          min_price_per_quintal?: number;
+          max_price_per_quintal?: number;
+          modal_price_per_quintal?: number;
+          source?: string | null;
+          created_at?: string;
+        };
+      };
+      mandi_price_sync_log: {
+        Row: {
+          id: string;
+          sync_date: string;
+          records_fetched: number;
+          records_inserted: number;
+          records_skipped_duplicate: number;
+          error_message: string | null;
+          duration_ms: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          sync_date: string;
+          records_fetched?: number;
+          records_inserted?: number;
+          records_skipped_duplicate?: number;
+          error_message?: string | null;
+          duration_ms?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          sync_date?: string;
+          records_fetched?: number;
+          records_inserted?: number;
+          records_skipped_duplicate?: number;
+          error_message?: string | null;
+          duration_ms?: number | null;
+          created_at?: string;
+        };
+      };
+      disease_catalog: {
+        Row: {
+          id: string;
+          crop_name: string;
+          disease_name: string;
+          hindi_name: string | null;
+          symptoms: string[];
+          cause: string | null;
+          favorable_conditions: string | null;
+          preventive_measures: string[];
+          organic_control: string[];
+          chemical_control: string[];
+          image_url: string | null;
+          severity: 'Low' | 'Moderate' | 'High' | 'Critical';
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          crop_name: string;
+          disease_name: string;
+          hindi_name?: string | null;
+          symptoms: string[];
+          cause?: string | null;
+          favorable_conditions?: string | null;
+          preventive_measures: string[];
+          organic_control: string[];
+          chemical_control: string[];
+          image_url?: string | null;
+          severity?: 'Low' | 'Moderate' | 'High' | 'Critical';
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          crop_name?: string;
+          disease_name?: string;
+          hindi_name?: string | null;
+          symptoms?: string[];
+          cause?: string | null;
+          favorable_conditions?: string | null;
+          preventive_measures?: string[];
+          organic_control?: string[];
+          chemical_control?: string[];
+          image_url?: string | null;
+          severity?: 'Low' | 'Moderate' | 'High' | 'Critical';
+          created_at?: string;
+        };
+      };
+    };
+    Views: {};
+    Functions: {
+      cleanup_stale_weather_cache: {
+        Args: Record<PropertyKey, never>;
+        Returns: void;
+      };
+    };
+  };
+}

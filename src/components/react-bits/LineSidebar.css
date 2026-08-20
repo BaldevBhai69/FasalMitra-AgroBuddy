@@ -1,0 +1,93 @@
+.line-sidebar {
+  --accent-color: #e7b10a;
+  --text-color: #898121;
+  --marker-color: rgba(137, 129, 33, 0.4);
+  --marker-length: 45px;
+  --marker-gap: 8px;
+  --tick-scale: 0.5;
+  --max-shift: 18px;
+  --item-gap: 16px;
+  --font-size: 0.95rem;
+  --smoothing: 100ms;
+
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  user-select: none;
+}
+
+.line-sidebar--markers {
+  padding-left: calc(var(--marker-length) + var(--marker-gap));
+}
+
+.line-sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--item-gap);
+}
+
+/* --effect (0..1) is driven per item by a rAF lerp in JS */
+.line-sidebar__item {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Widen the pointer target so items react a touch before the cursor arrives */
+.line-sidebar__item::before {
+  content: '';
+  position: absolute;
+  inset: -6px -48px;
+}
+
+.line-sidebar__label {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font-size: var(--font-size);
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--text-color));
+  transform: translateX(calc(var(--effect, 0) * var(--max-shift)));
+  transition: opacity 0.2s ease;
+}
+
+.line-sidebar__index {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  margin-right: 0.6rem;
+  font-size: 0.8em;
+  opacity: calc(0.55 + var(--effect, 0) * 0.45);
+}
+
+.line-sidebar__marker {
+  position: absolute;
+  top: 50%;
+  left: calc(-1 * var(--marker-length) - var(--marker-gap));
+  height: 1px;
+  width: var(--marker-length);
+  background-color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--marker-color));
+  transform-origin: left center;
+  transform: translateY(-50%) scaleX(calc(0.7 + var(--effect, 0) * 0.5));
+}
+
+/* Short static tick centered in the gap between two menu items */
+.line-sidebar--markers .line-sidebar__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + var(--item-gap) / 2);
+  left: calc(-1 * var(--marker-length) - var(--marker-gap));
+  height: 1px;
+  width: calc(var(--marker-length) * var(--tick-scale));
+  background-color: var(--marker-color);
+  opacity: 0.4;
+  transform: translateY(-50%);
+}
+
+/* When enabled, the in-between ticks grow with cursor proximity too */
+.line-sidebar--scale-tick .line-sidebar__item:not(:last-child)::after {
+  transform-origin: left center;
+  transform: translateY(-50%) scaleX(calc(0.7 + var(--effect, 0) * 0.6));
+}

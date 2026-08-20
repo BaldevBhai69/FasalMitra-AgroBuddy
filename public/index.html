@@ -1,0 +1,2997 @@
+<!doctype html>
+<html lang="en" class="anim">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14160c">
+  <title>FasalMitra — Intelligent Precision Agriculture</title>
+  <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+  <style>
+    :root {
+      --ink: #f7f1e5;
+      --surface: #14160c;
+      --gold: #e7b10a;
+      --olive: #898121;
+      --deep: #4c4b16;
+      --orb-reveal: cubic-bezier(.16, 1, .3, 1);
+      --orb-soft: cubic-bezier(.25, .8, .28, 1);
+    }
+
+    @font-face {
+      font-family: 'Orbit Sans';
+      src: local('Arial'), local('Helvetica');
+      font-weight: 400;
+      font-display: block;
+    }
+
+    @font-face {
+      font-family: 'Orbit Display';
+      src: local('Times New Roman'), local('Times'), local('serif');
+      font-weight: 400;
+      font-display: block;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html.lenis, html.lenis body {
+      height: auto;
+    }
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+    .lenis.lenis-smooth [data-lenis-prevent] {
+      overscroll-behavior: contain;
+    }
+    .lenis.lenis-stopped {
+      overflow: hidden;
+    }
+    .lenis.lenis-scrolling iframe {
+      pointer-events: none;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow-x: clip;
+      background: var(--surface);
+      color: var(--ink);
+      font-family: "Orbit Sans", Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    main.viewport {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: #0d0f07;
+      overflow-x: clip;
+    }
+
+    section.stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--surface);
+      overflow: hidden;
+      cursor: default;
+    }
+
+    /* Z-Index Hierarchy */
+    .orbit-word { z-index: 1; }
+    .flank-tag { z-index: 1; }
+    .flower { z-index: 2; }
+    .support-copy { z-index: 3; }
+    .brand-mark, .primary-nav, .secure-pill { z-index: 100; }
+    .mobile-scrim { z-index: 110; }
+    .mobile-sheet { z-index: 111; }
+    .mobile-burger { z-index: 112; }
+
+    /* 1. BRAND MARK */
+    .brand-mark {
+      position: fixed;
+      top: clamp(16px, 2.14dvh, 32px);
+      left: 3.854167vw;
+      width: clamp(34px, min(3.4375vw, 5.2dvh), 66px);
+      height: auto;
+      display: block;
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 100;
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .brand-mark.scrolled {
+      filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.25));
+    }
+
+    .brand-mark svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .brand-mark svg line {
+      transition: stroke 0.3s ease;
+    }
+
+    .brand-mark.scrolled svg line {
+      stroke: #14160c;
+    }
+
+    /* 2. PRIMARY NAV WITH WIDE UNIFORM GAP & FIXED GLASS SCROLL */
+    .primary-nav {
+      position: fixed;
+      top: clamp(18px, 3.42dvh, 36px);
+      left: 10.5vw;
+      display: flex;
+      align-items: center;
+      gap: clamp(36px, 5.2vw, 84px);
+      pointer-events: none;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      z-index: 100;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .primary-nav.scrolled {
+      background: rgba(20, 22, 12, 0.84);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(247, 241, 229, 0.16);
+      border-radius: 9999px;
+      padding: 8px clamp(18px, 2vw, 32px);
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
+      gap: clamp(24px, 3.6vw, 56px);
+    }
+
+    .primary-nav__item {
+      position: static;
+      font-size: clamp(13px, min(1.302083vw, 2.05dvh), 25px);
+      line-height: 1;
+      pointer-events: auto;
+    }
+
+    .primary-nav__item a {
+      color: var(--ink);
+      text-decoration: none;
+      pointer-events: auto;
+      transition: color 0.2s ease, opacity 0.2s ease;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .primary-nav__item a:hover {
+      color: var(--gold);
+      opacity: 0.95;
+    }
+
+    /* 3. SECURE SYSTEM PILL */
+    .secure-pill {
+      position: fixed;
+      top: clamp(16px, 2.33dvh, 32px);
+      right: 7.5vw;
+      height: clamp(34px, 4.439252dvh, 57px);
+      padding: 0 clamp(16px, 1.8vw, 32px);
+      background: var(--ink);
+      color: var(--deep);
+      border-radius: 999px;
+      font-size: clamp(12px, min(1.15vw, 1.85dvh), 20px);
+      font-weight: 600;
+      letter-spacing: 0.026923em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      pointer-events: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, border 0.2s ease;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    .secure-pill.scrolled {
+      background: rgba(20, 22, 12, 0.9);
+      color: #f7f1e5;
+      border: 1px solid rgba(231, 177, 10, 0.35);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .secure-pill:hover, .secure-pill.scrolled:hover {
+      transform: translateY(-1px) scale(1.02);
+      background: var(--gold);
+      color: var(--surface);
+      box-shadow: 0 6px 28px rgba(231, 177, 10, 0.35);
+    }
+
+    .secure-pill:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* 4. WORDMARK FASALMITRA (VERTICALLY STRETCHED WITH OVERLINE & UNDERLINE) */
+    .orbit-word {
+      position: absolute;
+      top: 17.5dvh;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: "Orbit Display", "Times New Roman", Times, serif;
+      font-size: min(15.2vw, 30dvh);
+      font-weight: 400;
+      line-height: 0.82;
+      letter-spacing: 0.05em;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .orbit-word__mask {
+      display: block;
+      overflow: hidden;
+      padding-top: 0.14em;
+      padding-bottom: 0.14em;
+      margin-top: -0.14em;
+      margin-bottom: -0.14em;
+    }
+
+    .orbit-word__inner {
+      display: inline-flex;
+      align-items: baseline;
+      transform: scaleY(1.22);
+      transform-origin: center center;
+    }
+
+    .orbit-word__white {
+      position: relative;
+      display: inline-block;
+      color: var(--ink);
+    }
+
+    .orbit-word__white::before {
+      content: '';
+      position: absolute;
+      top: -0.04em;
+      left: 0;
+      right: 0.04em;
+      height: clamp(2px, 0.038em, 6px);
+      background: var(--ink);
+      border-radius: 1px;
+    }
+
+    .orbit-word__pink {
+      position: relative;
+      display: inline-block;
+      background: linear-gradient(180deg, #f7f1e5 0%, #e7b10a 60%, #898121 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .orbit-word__pink::after {
+      content: '';
+      position: absolute;
+      bottom: -0.04em;
+      left: 0.04em;
+      right: 0;
+      height: clamp(2px, 0.038em, 6px);
+      background: linear-gradient(90deg, #e7b10a, #898121);
+      border-radius: 1px;
+    }
+
+    /* 4b. FLANK LABELS (AGRO / BUDDY BELOW CURVING PETALS) */
+    .flank-tag {
+      position: absolute;
+      top: 70.5dvh;
+      transform: translateY(-50%);
+      font-family: "Orbit Sans", Arial, Helvetica, sans-serif;
+      font-size: clamp(10px, 0.8vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 1;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .flank-tag--left {
+      right: calc(50vw + 17.5vw);
+      text-align: right;
+    }
+
+    .flank-tag--right {
+      left: calc(50vw + 17.5vw);
+      text-align: left;
+    }
+
+    html.anim .flank-tag {
+      animation: orb-dim 650ms var(--orb-soft) 850ms both;
+    }
+
+    /* 5. FLOWER STACK WITH SEPARATED FLOAT WRAPPER */
+    .flower {
+      position: absolute;
+      top: 14.749065dvh;
+      left: 49.121328vw;
+      height: 106.109034dvh;
+      transform: translateX(-50%);
+      transform-origin: center 40%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .flower__float {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-origin: center 40%;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .flower__sizer {
+      visibility: hidden;
+      height: 100%;
+      width: auto;
+      display: block;
+      max-width: none;
+    }
+
+    .flower__layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .flower__layer img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .flower__layer--bg {
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+    }
+
+    .flower__layer--top {
+      -webkit-mask-image: linear-gradient(#0000, #0000);
+      mask-image: linear-gradient(#0000, #0000);
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+    }
+
+    /* 6. CORNER COPY */
+    .support-copy {
+      position: absolute;
+      bottom: 4.361371dvh;
+      color: var(--ink);
+      font-size: clamp(14px, min(1.40625vw, 2.102804dvh), 27px);
+      line-height: 1.28;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .support-copy__inner {
+      display: block;
+    }
+
+    .support-copy--left {
+      left: 3.177083vw;
+      transform: scaleX(1.073);
+      transform-origin: left bottom;
+    }
+
+    .support-copy--right {
+      left: 78.28125vw;
+      transform: scaleX(1.058);
+      transform-origin: left bottom;
+    }
+
+    /* 7. MOBILE CHROME */
+    .mobile-burger {
+      display: none;
+      position: fixed;
+      top: clamp(16px, 2.3dvh, 32px);
+      right: 5vw;
+      width: 44px;
+      height: 44px;
+      background: var(--ink);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      z-index: 112;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .mobile-burger.scrolled {
+      background: #14160c;
+      border: 1px solid rgba(231, 177, 10, 0.3);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .mobile-burger span,
+    .mobile-burger span::before,
+    .mobile-burger span::after {
+      content: '';
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: var(--deep);
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
+      position: relative;
+    }
+
+    .mobile-burger.scrolled span,
+    .mobile-burger.scrolled span::before,
+    .mobile-burger.scrolled span::after {
+      background: #f7f1e5;
+    }
+
+    .mobile-burger span::before {
+      position: absolute;
+      top: -6px;
+      left: 0;
+    }
+
+    .mobile-burger span::after {
+      position: absolute;
+      top: 6px;
+      left: 0;
+    }
+
+    .mobile-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 15, 7, 0.75);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-sheet {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(80vw, 320px);
+      background: rgba(20, 22, 12, 0.96);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid rgba(137, 129, 33, 0.3);
+      padding: 5rem 2rem 2rem;
+      transform: translateX(100%);
+      transition: transform 0.35s var(--orb-reveal);
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .mobile-sheet a {
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 1.25rem;
+      font-weight: 500;
+      opacity: 0.9;
+      transition: color 0.2s, opacity 0.2s;
+    }
+
+    .mobile-sheet a:hover {
+      color: var(--gold);
+      opacity: 1;
+    }
+
+    body.menu-open .mobile-scrim {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    body.menu-open .mobile-sheet {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    body.menu-open .mobile-burger span {
+      background: transparent;
+    }
+
+    body.menu-open .mobile-burger span::before {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    body.menu-open .mobile-burger span::after {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    /* 8. ENTRANCE ANIMATIONS */
+    @keyframes orb-word {
+      from { transform: translateY(118%); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes orb-subject {
+      from { opacity: 0; transform: translateX(-50%) translateY(3.4dvh); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes orb-corner {
+      from { opacity: 0; transform: translateY(1.5dvh); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes orb-quiet {
+      from { opacity: 0; transform: translateY(1.2dvh); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes orb-dim {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    html.anim .brand-mark {
+      animation: orb-quiet 620ms var(--orb-soft) 100ms both;
+    }
+
+    html.anim .primary-nav__item--home {
+      animation: orb-dim 550ms var(--orb-soft) 180ms both;
+    }
+
+    html.anim .primary-nav__item--mission {
+      animation: orb-dim 550ms var(--orb-soft) 225ms both;
+    }
+
+    html.anim .primary-nav__item--about {
+      animation: orb-dim 550ms var(--orb-soft) 270ms both;
+    }
+
+    html.anim .primary-nav__item--tech {
+      animation: orb-dim 550ms var(--orb-soft) 315ms both;
+    }
+
+    html.anim .secure-pill {
+      animation: orb-quiet 620ms var(--orb-soft) 340ms both;
+    }
+
+    html.anim .orbit-word__inner {
+      animation: orb-word 1150ms var(--orb-reveal) 300ms both;
+    }
+
+    html.anim .flower {
+      animation: orb-subject 1150ms var(--orb-reveal) 660ms both;
+    }
+
+    html.anim .support-copy__inner {
+      animation: orb-corner 720ms var(--orb-soft) 980ms both;
+    }
+
+    html.anim .mobile-burger {
+      animation: orb-quiet 620ms var(--orb-soft) 300ms both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html.anim .brand-mark,
+      html.anim .primary-nav__item,
+      html.anim .secure-pill,
+      html.anim .orbit-word__inner,
+      html.anim .flower,
+      html.anim .support-copy__inner,
+      html.anim .mobile-burger {
+        animation: orb-dim 280ms ease both !important;
+      }
+    }
+
+    /* 9. RESPONSIVE BREAKPOINTS */
+    @media (max-width: 1200px) {
+      .orbit-word {
+        left: 0;
+        width: 100%;
+        text-align: center;
+      }
+      .support-copy--right {
+        left: auto;
+        right: 4vw;
+      }
+    }
+
+    @media (max-width: 900px), (max-aspect-ratio: 4/5) {
+      .primary-nav, .secure-pill {
+        display: none !important;
+      }
+      .mobile-burger, .mobile-scrim, .mobile-sheet {
+        display: flex;
+      }
+      .flower {
+        top: 22dvh;
+        height: min(55dvh, 110vw);
+      }
+      .orbit-word {
+        top: 14dvh;
+        font-size: min(27.5vw, 18dvh);
+      }
+      .support-copy {
+        white-space: normal;
+        max-width: 42vw;
+        font-size: 13px;
+      }
+      .support-copy--left {
+        left: 5vw;
+      }
+    /* 10. MISSION SECTION */
+    .mission-section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background-color: #EADBC8;
+      background: #EADBC8;
+      color: #1E2010;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(80px, 12vh, 160px) clamp(24px, 6vw, 80px);
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .mission-section__grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 30px), transparent 100%);
+      mask-image: linear-gradient(to bottom, black calc(100% - 30px), transparent 100%);
+    }
+
+    .mission-section__grid canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .mission-section__content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: clamp(28px, 4.5vh, 48px);
+    }
+
+    .mission-tag {
+      font-family: "Orbit Sans", Arial, Helvetica, sans-serif;
+      font-size: clamp(11px, 0.9vw, 14px);
+      font-weight: 700;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: #898121;
+      opacity: 0.9;
+      margin-bottom: -12px;
+    }
+
+    .masked-heading {
+      position: relative;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      font-family: "Orbit Display", "Times New Roman", Times, serif;
+      font-size: clamp(48px, 9vw, 115px);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      line-height: 1.02;
+      text-transform: uppercase;
+      color: transparent;
+      background-image: url('/images/soil-texture.jpg');
+      background-size: 130%;
+      background-position: center;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      user-select: none;
+      will-change: background-position;
+    }
+
+    /* Mission Section Farmer Sticker Animation & Alignment */
+    @keyframes stickerWiggle {
+      0%, 100% {
+        transform: rotate(5.5deg) translate(0px, 0px);
+      }
+      25% {
+        transform: rotate(8deg) translate(2px, -3px);
+      }
+      50% {
+        transform: rotate(4deg) translate(-1px, 2px);
+      }
+      75% {
+        transform: rotate(7.5deg) translate(1px, -2px);
+      }
+    }
+
+    .mission-center-stage {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mission-paragraph-centered {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: none;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+
+    .mission-paragraph {
+      width: 100%;
+      margin: 0 auto;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: none;
+      font-family: "Orbit Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: clamp(15px, 1.15vw, 18px);
+      line-height: 1.95;
+      font-weight: 600;
+      color: #1A1807;
+      letter-spacing: 0.012em;
+    }
+
+    .mission-farmer-sticker-anchor {
+      position: absolute;
+      left: calc(50% + 305px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      pointer-events: auto;
+    }
+
+    .mission-farmer-sticker {
+      position: relative;
+      width: clamp(170px, 14.5vw, 230px);
+      filter: drop-shadow(0 16px 26px rgba(45, 35, 12, 0.22)) drop-shadow(0 4px 8px rgba(45, 35, 12, 0.12));
+      animation: stickerWiggle 4.6s ease-in-out infinite;
+      transform-origin: 50% 60%;
+      user-select: none;
+      cursor: default;
+      transition: filter 0.3s ease;
+    }
+
+    .mission-farmer-sticker:hover {
+      filter: drop-shadow(0 22px 38px rgba(45, 35, 12, 0.28)) drop-shadow(0 8px 16px rgba(45, 35, 12, 0.16));
+    }
+
+    .mission-farmer-sticker img {
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+
+    @media (max-width: 1240px) {
+      .mission-center-stage {
+        flex-direction: column;
+      }
+      .mission-farmer-sticker-anchor {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        margin-top: 32px;
+      }
+      .mission-farmer-sticker {
+        width: clamp(160px, 24vw, 210px);
+      }
+    }    /* 11. ABOUT US SECTION (CIRCULAR 3D TESTIMONIALS) */
+    .about-section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background-color: #EADBC8;
+      background: #EADBC8;
+      color: #14160C;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(80px, 11vh, 140px) clamp(20px, 5vw, 60px);
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .about-section__grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30px, black calc(100% - 30px), transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 30px, black calc(100% - 30px), transparent 100%);
+    }
+
+    .about-section__grid canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .about-section__content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: clamp(28px, 4.5vh, 48px);
+    }
+
+    .circular-testimonials-root {
+      width: 100%;
+      max-width: 68rem;
+      padding: 1rem;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(2.5rem, 5vw, 4.5rem);
+      align-items: center;
+    }
+
+    @media (min-width: 860px) {
+      .testimonial-grid {
+        grid-template-columns: 1fr 1.15fr;
+      }
+    }
+
+    .testimonial-image-stage {
+      position: relative;
+      width: 100%;
+      height: clamp(18rem, 24vw, 24rem);
+      perspective: 1000px;
+    }
+
+    .testimonial-card-img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 1.75rem;
+      box-shadow: 0 16px 36px rgba(45, 35, 12, 0.22), 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 4px solid #FFFFFF;
+      cursor: pointer;
+      transform-origin: center center;
+    }
+
+    .testimonial-info-stage {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+      min-height: 220px;
+    }
+
+    .builder-name {
+      font-family: "Orbit Display", "Times New Roman", Times, serif;
+      font-size: clamp(1.5rem, 2.2vw, 2.1rem);
+      font-weight: 900;
+      color: #14160C;
+      letter-spacing: 0.02em;
+      margin: 0 0 0.35rem 0;
+    }
+
+    .builder-designation {
+      font-family: "Orbit Sans", Arial, sans-serif;
+      font-size: clamp(0.85rem, 1vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #898121;
+      margin: 0 0 1.4rem 0;
+    }
+
+    .builder-quote {
+      font-family: "Orbit Sans", -apple-system, sans-serif;
+      font-size: clamp(0.98rem, 1.15vw, 1.15rem);
+      color: #1A1807;
+      line-height: 1.85;
+      font-weight: 600;
+      margin: 0;
+      text-align: justify;
+      text-justify: inter-word;
+      min-height: 90px;
+    }
+
+    .builder-word {
+      display: inline-block;
+      opacity: 0;
+      filter: blur(8px);
+      transform: translateY(4px);
+      transition: opacity 0.22s ease-in-out, filter 0.22s ease-in-out, transform 0.22s ease-in-out;
+    }
+
+    .builder-word.visible {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0px);
+    }
+
+    .builder-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 2.2rem;
+    }
+
+    .builder-arrow-btn {
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: none;
+      background: #14160C;
+      color: #F7F1E5;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    .builder-arrow-btn:hover {
+      background: #E7B10A;
+      color: #14160C;
+      transform: scale(1.05);
+    }
+
+    .builder-arrow-btn:active {
+      transform: scale(0.95);
+    }
+
+    .builder-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 1rem;
+    }
+
+    .builder-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background: rgba(92, 84, 21, 0.25);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .builder-dot.active {
+      width: 24px;
+      background: #5C5415;
+    }
+
+    /* 12. TECH SECTION (FEATURE SHADER CARDS) */
+    .tech-section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background-color: #EADBC8;
+      background: #EADBC8;
+      color: #14160C;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(80px, 12vh, 140px) clamp(20px, 5vw, 60px);
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .tech-section__grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30px, black 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 30px, black 100%);
+    }
+
+    .tech-section__grid canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tech-section__content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: clamp(28px, 4.5vh, 48px);
+    }
+
+    .tech-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: clamp(1.5rem, 2.5vw, 2rem);
+      width: 100%;
+      margin-top: clamp(8px, 1.5vh, 24px);
+    }
+
+    @media (min-width: 992px) {
+      .tech-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .tech-feature-card {
+      position: relative;
+      min-height: 340px;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .tech-feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.32);
+    }
+
+    .tech-shader-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .tech-card-glass {
+      position: relative;
+      z-index: 2;
+      padding: clamp(1.5rem, 2vw, 2rem);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+      background: rgba(14, 16, 8, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 1.5rem;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .tech-feature-card:hover .tech-card-glass {
+      border-color: rgba(231, 177, 10, 0.45);
+    }
+
+    .tech-card-icon {
+      margin-bottom: 1.25rem;
+      color: #f7f1e5;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+    }
+
+    .tech-card-title {
+      font-family: "Orbit Display", "Times New Roman", Times, serif;
+      font-size: clamp(1.25rem, 1.4vw, 1.45rem);
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 0.75rem 0;
+      letter-spacing: 0.02em;
+    }
+
+    .tech-card-desc {
+      font-family: "Orbit Sans", -apple-system, sans-serif;
+      font-size: clamp(0.88rem, 1vw, 0.96rem);
+      color: #e5e5e5;
+      line-height: 1.65;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* 13. FINAL SECTION (MINIMALIST DIVIDER, BROWN BACKGROUND, SCROLL CHOREOGRAPHY) */
+    .vintage-flourish-wrap {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 20;
+      pointer-events: none;
+      padding: 0 1.5rem;
+      margin-top: -24px;
+      margin-bottom: -16px;
+    }
+
+    .vintage-flourish-svg {
+      width: 100%;
+      max-width: 880px;
+      height: auto;
+      filter: drop-shadow(0 0 8px rgba(231, 177, 10, 0.4));
+    }
+
+    .final-choreography-section {
+      position: relative;
+      width: 100%;
+      height: 300vh;
+      background-color: #1E1510;
+      color: #f7f1e5;
+      overflow: visible;
+    }
+
+    .choreography-sticky-stage {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .choreography-stage-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .choreography-card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 42vw;
+      height: 28vh;
+      overflow: hidden;
+      transform: translate(-50%, -50%);
+      background-color: #1b140e;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      will-change: transform, width, height, opacity, border-radius;
+    }
+
+    .choreography-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .choreography-card.card-tl { z-index: 10; }
+    .choreography-card.card-br { z-index: 20; }
+    .choreography-card.card-bl { z-index: 30; }
+    .choreography-card.card-tr-hero {
+      z-index: 40;
+      transform-origin: center center;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: none;
+      box-shadow: none;
+    }
+
+    .hero-vignette-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .choreography-cta-container {
+      position: absolute;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.5rem;
+      opacity: 0;
+      transform: scale(0.85);
+      pointer-events: none;
+    }
+
+    .choreography-cta-button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(18px, 2.5vh, 26px) clamp(40px, 5vw, 64px);
+      font-family: "Orbit Display", "Times New Roman", Times, serif;
+      font-size: clamp(1.25rem, 2vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #14160C;
+      background-color: #E7B10A;
+      border-radius: 9999px;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.7), 0 0 40px rgba(231, 177, 10, 0.45);
+      text-decoration: none;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .choreography-cta-button:hover {
+      background-color: #F2C226;
+      transform: scale(1.05);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 50px rgba(231, 177, 10, 0.6);
+    }
+
+    .choreography-cta-button:active {
+      transform: scale(0.96);
+    }
+
+    .choreography-cta-button .cta-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .choreography-cta-button svg {
+      width: clamp(24px, 2vw, 32px);
+      height: clamp(24px, 2vw, 32px);
+      transition: transform 0.3s ease;
+    }
+
+    .choreography-cta-button:hover svg {
+      transform: translateX(6px);
+    }
+  </style>
+</head>
+<body>
+  <main class="viewport">
+    <section class="stage" id="home">
+      
+      <!-- Brand mark SVG -->
+      <a href="#home" class="brand-mark" aria-label="Orbit Home">
+        <svg viewBox="0 0 66 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="33" y1="1" x2="33" y2="61" stroke="#f7f1e5" stroke-width="5" stroke-linecap="square"/>
+          <line x1="3" y1="31" x2="63" y2="31" stroke="#f7f1e5" stroke-width="5" stroke-linecap="square"/>
+          <line x1="11.8" y1="9.8" x2="54.2" y2="52.2" stroke="#f7f1e5" stroke-width="5" stroke-linecap="square"/>
+          <line x1="54.2" y1="9.8" x2="11.8" y2="52.2" stroke="#f7f1e5" stroke-width="5" stroke-linecap="square"/>
+        </svg>
+      </a>
+
+      <!-- Primary Nav -->
+      <ul class="primary-nav">
+        <li class="primary-nav__item primary-nav__item--home"><a href="#home">Home</a></li>
+        <li class="primary-nav__item primary-nav__item--mission"><a href="#mission">Mission</a></li>
+        <li class="primary-nav__item primary-nav__item--about"><a href="#about">About Us</a></li>
+        <li class="primary-nav__item primary-nav__item--tech"><a href="#tech">Tech</a></li>
+      </ul>
+
+      <!-- Dashboard CTA Pill -->
+      <a href="/dashboard" class="secure-pill" id="dashboard-cta">
+        Dashboard →
+      </a>
+
+      <!-- Wordmark FASALMITRA -->
+      <h1 class="orbit-word" id="orbit-title" aria-label="FasalMitra">
+        <span class="orbit-word__mask">
+          <span class="orbit-word__inner">
+            <span class="orbit-word__white">FASAL</span><span class="orbit-word__pink">MITRA</span>
+          </span>
+        </span>
+      </h1>
+
+      <!-- Flank Subtitle Labels: AGRO and BUDDY on either side of the flower at center Y -->
+      <div class="flank-tag flank-tag--left" aria-hidden="true">A G R O</div>
+      <div class="flank-tag flank-tag--right" aria-hidden="true">B U D D Y</div>
+
+      <!-- Flower Stack (Front & Reveal Lilies) -->
+      <div class="flower" id="flower-stack">
+        <div class="flower__float" id="flower-float">
+          <img
+            class="flower__sizer"
+            id="flower-sizer"
+            src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260808_192942_e1086505-d7da-433b-a59b-8220f4e6c808.png&w=1280&q=85"
+            alt=""
+            aria-hidden="true"
+          >
+          <div class="flower__layer flower__layer--bg" id="flower-bg">
+            <img
+              id="flower-img-bg"
+              src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260808_192942_e1086505-d7da-433b-a59b-8220f4e6c808.png&w=1280&q=85"
+              alt="Pixel-art pink and violet lily"
+            >
+          </div>
+          <div class="flower__layer flower__layer--top" id="flower-top" aria-hidden="true">
+            <img
+              id="flower-img-top"
+              src="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260808_151324_bf318a5f-5525-4fc7-aab5-e9a341018828.png&w=1280&q=85"
+              alt=""
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Support Corner Copy -->
+      <div class="support-copy support-copy--left">
+        <span class="support-copy__inner">Every acre,<br>intelligently nurtured.</span>
+      </div>
+
+      <div class="support-copy support-copy--right">
+        <span class="support-copy__inner">Less water wasted.<br>More bountiful yield.</span>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="mobile-burger" id="mobile-burger-btn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+      </button>
+
+      <!-- Mobile Scrim & Sheet -->
+      <div class="mobile-scrim" id="mobile-scrim"></div>
+      <nav class="mobile-sheet" id="mobile-sheet" aria-label="Mobile Navigation">
+        <a href="#home">Home</a>
+        <a href="#mission">Mission</a>
+        <a href="#about">About Us</a>
+        <a href="#tech">Tech</a>
+        <a href="/dashboard" style="margin-top: 1rem; color: #e7b10a; font-weight: 600;">Dashboard →</a>
+      </nav>
+
+    </section>
+
+    <!-- Mission Section (Camel to Light Peach with MaskedHeading and CursorGrid) -->
+    <section class="mission-section" id="mission">
+      <div class="mission-section__grid" id="mission-grid-container">
+        <canvas id="mission-grid-canvas"></canvas>
+      </div>
+
+      <div class="mission-section__content">
+        <span class="mission-tag">FasalMitra • AgroBuddy</span>
+        <h2 class="masked-heading" id="mission-masked-heading">OUR MISSION</h2>
+        <div class="mission-center-stage">
+          <div class="mission-paragraph-centered">
+            <p class="mission-paragraph">
+              FasalMitra is dedicated to revolutionizing Indian agriculture by placing intelligent,
+              hyper-localized agronomy directly into the hands of every farmer. By synthesizing real-time
+              IoT soil intelligence, satellite telemetry, and predictive weather forecasting with FAO-56
+              irrigation protocols and automated disease diagnosis, we eliminate guesswork from cultivation.
+              Our mission is to safeguard vital groundwater reserves, drastically reduce input overheads,
+              and deliver equitable, transparent APMC mandi price discovery—transforming every acre into a
+              resilient, high-yielding, and financially sovereign harvest for generations to come.
+            </p>
+          </div>
+          <div class="mission-farmer-sticker-anchor">
+            <div class="mission-farmer-sticker">
+              <img
+                src="/images/farmer-sticker.png"
+                alt="Vintage literature illustration sticker of an Indian farmer holding a sickle and wheat stalks"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Us Section (Circular 3D Perspective Builders Showcase) -->
+    <section class="about-section" id="about">
+      <div class="about-section__grid" id="about-grid-container">
+        <canvas id="about-grid-canvas"></canvas>
+      </div>
+
+      <div class="about-section__content">
+        <span class="mission-tag">FasalMitra • The Builders</span>
+        <h2 class="masked-heading" id="about-masked-heading">ABOUT US</h2>
+
+        <div class="circular-testimonials-root">
+          <div class="testimonial-grid">
+            <!-- 3D Perspective Images Container -->
+            <div class="testimonial-image-stage" id="testimonial-images">
+              <img src="/images/shauryaditya.jpg" alt="Shauryaditya Pratap Singh" class="testimonial-card-img" data-index="0" />
+              <img src="/images/faraz.jpg" alt="Faraz Athar" class="testimonial-card-img" data-index="1" />
+              <img src="/images/team-duo.jpg" alt="Shauryaditya & Faraz" class="testimonial-card-img" data-index="2" />
+            </div>
+
+            <!-- Testimonial Content Block -->
+            <div class="testimonial-info-stage">
+              <div id="testimonial-text-box">
+                <h3 class="builder-name" id="builder-name">Shauryaditya Pratap Singh</h3>
+                <p class="builder-designation" id="builder-designation">Backend Architect & Design Lead</p>
+                <p class="builder-quote" id="builder-quote">
+                  <!-- words dynamically animated -->
+                </p>
+              </div>
+
+              <div class="builder-nav-controls">
+                <button class="builder-arrow-btn" id="builder-prev-btn" aria-label="Previous builder">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                </button>
+                <button class="builder-arrow-btn" id="builder-next-btn" aria-label="Next builder">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+                <div class="builder-dots" id="builder-dots">
+                  <span class="builder-dot active" data-index="0"></span>
+                  <span class="builder-dot" data-index="1"></span>
+                  <span class="builder-dot" data-index="2"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Section (Feature Shader Cards) -->
+    <section class="tech-section" id="tech">
+      <div class="tech-section__grid" id="tech-grid-container">
+        <canvas id="tech-grid-canvas"></canvas>
+      </div>
+
+      <div class="tech-section__content">
+        <span class="mission-tag">FasalMitra • The Architecture</span>
+        <h2 class="masked-heading" id="tech-masked-heading">OUR TECH</h2>
+
+        <div class="tech-cards-grid">
+          <!-- Card 0: IoT Soil Telemetry -->
+          <div class="tech-feature-card">
+            <canvas class="tech-shader-canvas" data-index="0"></canvas>
+            <div class="tech-card-glass">
+              <div>
+                <div class="tech-card-icon">
+                  <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                  </svg>
+                </div>
+                <h3 class="tech-card-title">IoT Soil Telemetry</h3>
+                <p class="tech-card-desc">Real-time NPK, soil moisture, and pH telemetry streamed continuously from low-power sub-GHz field probes.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 1: FAO-56 Irrigation Engine -->
+          <div class="tech-feature-card">
+            <canvas class="tech-shader-canvas" data-index="1"></canvas>
+            <div class="tech-card-glass">
+              <div>
+                <div class="tech-card-icon">
+                  <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+                  </svg>
+                </div>
+                <h3 class="tech-card-title">FAO-56 Irrigation Engine</h3>
+                <p class="tech-card-desc">Automated Penman-Monteith evapotranspiration algorithms calculating precision water requirements per crop stage.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: AI Vision Pathology -->
+          <div class="tech-feature-card">
+            <canvas class="tech-shader-canvas" data-index="2"></canvas>
+            <div class="tech-card-glass">
+              <div>
+                <div class="tech-card-icon">
+                  <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2m-10 0H5a2 2 0 01-2-2v-2"/>
+                    <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <h3 class="tech-card-title">AI Vision Pathology</h3>
+                <p class="tech-card-desc">Edge-computed Computer Vision diagnosing foliar diseases, blights, and pest infestations in milliseconds.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Satellite NDVI Telemetry -->
+          <div class="tech-feature-card">
+            <canvas class="tech-shader-canvas" data-index="3"></canvas>
+            <div class="tech-card-glass">
+              <div>
+                <div class="tech-card-icon">
+                  <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                </div>
+                <h3 class="tech-card-title">Satellite NDVI Telemetry</h3>
+                <p class="tech-card-desc">Multispectral Sentinel-2 satellite telemetry tracking chlorophyll density, canopy moisture, and biomass health.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: APMC Mandi Intelligence -->
+          <div class="tech-feature-card">
+            <canvas class="tech-shader-canvas" data-index="4"></canvas>
+            <div class="tech-card-glass">
+              <div>
+                <div class="tech-card-icon">
+                  <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                  </svg>
+                </div>
+                <h3 class="tech-card-title">APMC Mandi Intelligence</h3>
+                <p class="tech-card-desc">Predictive neural networks forecasting commodity spot prices, arrival volumes, and peak selling windows across India.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Hyper-Local Microclimate -->
+          <div class="tech-feature-card">
+            <canvas class="tech-shader-canvas" data-index="5"></canvas>
+            <div class="tech-card-glass">
+              <div>
+                <div class="tech-card-icon">
+                  <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z"/>
+                  </svg>
+                </div>
+                <h3 class="tech-card-title">Hyper-Local Microclimate</h3>
+                <p class="tech-card-desc">Sub-kilometer numerical weather prediction synthesizing global ECMWF forecasts with live on-farm micro-sensors.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Smooth Gradient Transition between Tech Section (#EADBC8) and Experience Section (#1E1510) -->
+    <div style="width: 100%; height: clamp(80px, 12vh, 160px); background: linear-gradient(to bottom, #EADBC8 0%, #1E1510 100%); pointer-events: none;"></div>
+
+    <!-- Final Section (Scroll Choreography & Fullscreen Dashboard CTA) -->
+    <section class="final-choreography-section" id="experience">
+      <div class="choreography-sticky-stage" id="choreography-stage">
+        <div class="choreography-stage-inner">
+          <!-- Top Left Image -->
+          <div class="choreography-card card-tl" id="card-tl">
+            <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=2070&auto=format&fit=crop" alt="Agronomy Telemetry" />
+          </div>
+
+          <!-- Bottom Right Image -->
+          <div class="choreography-card card-br" id="card-br">
+            <img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2070&auto=format&fit=crop" alt="Cultivation & Harvest" />
+          </div>
+
+          <!-- Bottom Left Image -->
+          <div class="choreography-card card-bl" id="card-bl">
+            <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=2069&auto=format&fit=crop" alt="Field Sensors" />
+          </div>
+
+          <!-- Top Right Image (Hero - expands to fullscreen) -->
+          <div class="choreography-card card-tr-hero" id="card-tr-hero">
+            <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=2070&auto=format&fit=crop" alt="FasalMitra Hero Landscape" />
+            <div class="hero-vignette-overlay" id="hero-vignette"></div>
+          </div>
+
+          <!-- Central Prominent Dashboard CTA Button -->
+          <div class="choreography-cta-container" id="choreography-cta">
+            <a href="/dashboard" class="choreography-cta-button" id="final-dashboard-btn">
+              <span class="cta-inner">
+                <span>Enter Dashboard</span>
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Reset scroll position to top on refresh
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+
+      // 0. LENIS ULTRA-FLUID SMOOTH SCROLL ENGINE
+      let lenis = null;
+      if (typeof window.Lenis !== 'undefined') {
+        lenis = new window.Lenis({
+          duration: 1.4,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: 'vertical',
+          gestureOrientation: 'vertical',
+          smoothWheel: true,
+          wheelMultiplier: 1.0,
+          touchMultiplier: 1.5,
+          infinite: false,
+        });
+
+        lenis.scrollTo(0, { immediate: true });
+
+        function lenisRaf(time) {
+          lenis.raf(time);
+          requestAnimationFrame(lenisRaf);
+        }
+        requestAnimationFrame(lenisRaf);
+      }
+
+      // Smooth nav anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', function (e) {
+          const href = this.getAttribute('href');
+          if (href && href.length > 1) {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+              if (lenis) {
+                lenis.scrollTo(target, { duration: 1.2 });
+              } else {
+                target.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
+          }
+        });
+      });
+
+      // 1. ENTRANCE CLEANUP
+      const htmlEl = document.documentElement;
+      const cleanupTimer = setTimeout(() => {
+        htmlEl.classList.remove('anim');
+      }, 2200);
+
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          htmlEl.classList.remove('anim');
+          clearTimeout(cleanupTimer);
+        }, 1800);
+      });
+
+      // 2. MOBILE MENU TOGGLE
+      const burgerBtn = document.getElementById('mobile-burger-btn');
+      const scrim = document.getElementById('mobile-scrim');
+
+      function toggleMenu(open) {
+        const isOpen = typeof open === 'boolean' ? open : !document.body.classList.contains('menu-open');
+        document.body.classList.toggle('menu-open', isOpen);
+        if (burgerBtn) burgerBtn.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      if (burgerBtn) burgerBtn.addEventListener('click', () => toggleMenu());
+      if (scrim) scrim.addEventListener('click', () => toggleMenu(false));
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') toggleMenu(false);
+      });
+
+      // 3. FLOWER POINTER FLOAT + ORGANIC MORPH REVEAL ENGINE
+      const TRAIL_MAX_POINTS  = 60;
+      const TRAIL_HEAD_R      = 140;
+      const TRAIL_NOISE_AMP   = 44;
+      const TRAIL_BLOB_PTS    = 24;
+      const TRAIL_FADE_SPEED  = 0.92;
+      const TRAIL_SAMPLE_DIST = 8;
+
+      const stage = document.getElementById('stage');
+      const flower = document.getElementById('flower-stack');
+      const floatWrap = document.getElementById('flower-float');
+      const sizer = document.getElementById('flower-sizer');
+      const layerBg = document.getElementById('flower-bg');
+      const layerTop = document.getElementById('flower-top');
+
+      if (!stage || !flower || !layerBg || !layerTop) return;
+
+      const canvasBg = document.createElement('canvas');
+      const ctxBg = canvasBg.getContext('2d');
+      const canvasTop = document.createElement('canvas');
+      const ctxTop = canvasTop.getContext('2d');
+
+      let width = 0;
+      let height = 0;
+
+      function resizeCanvases() {
+        const rect = flower.getBoundingClientRect();
+        if (rect.width > 20 && rect.height > 20) {
+          width = Math.floor(rect.width);
+          height = Math.floor(rect.height);
+          canvasBg.width = width;
+          canvasBg.height = height;
+          canvasTop.width = width;
+          canvasTop.height = height;
+        }
+      }
+
+      if (sizer) {
+        sizer.addEventListener('load', resizeCanvases);
+        if (sizer.complete) resizeCanvases();
+      }
+      window.addEventListener('resize', resizeCanvases);
+      setTimeout(resizeCanvases, 100);
+      setTimeout(resizeCanvases, 500);
+      setTimeout(resizeCanvases, 1500);
+
+      // Pointer physics & Trail Store
+      const trailPoints = [];
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let lastSampleX = -9999;
+      let lastSampleY = -9999;
+      let isHovering = false;
+      let headRadius = 0;
+      let time = 0;
+
+      // Spring Float Inertia Variables
+      let floatX = 0;
+      let floatY = 0;
+      let floatRot = 0;
+
+      function handlePointerMove(e) {
+        isHovering = true;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      }
+
+      window.addEventListener('pointermove', handlePointerMove, { passive: true });
+      window.addEventListener('pointerenter', () => { isHovering = true; });
+      window.addEventListener('pointerleave', () => { isHovering = false; });
+
+      /**
+       * 24-point organic trigonometric morphing blob
+       */
+      function drawMorphBlob(ctx, cx, cy, r, t, seed, fillStyle) {
+        if (r < 2) return;
+
+        const pts = [];
+        for (let i = 0; i < TRAIL_BLOB_PTS; i++) {
+          const angle = (i / TRAIL_BLOB_PTS) * Math.PI * 2;
+          const n1 = Math.sin(angle * 3 + t * 1.4 + seed) * 0.45;
+          const n2 = Math.sin(angle * 5 - t * 0.9 + seed * 2.3) * 0.3;
+          const n3 = Math.cos(angle * 2 + t * 1.8 + seed * 0.7) * 0.25;
+          const noise = (n1 + n2 + n3) * TRAIL_NOISE_AMP * (r / TRAIL_HEAD_R);
+          const rad = Math.max(1, r + noise);
+          pts.push({
+            x: cx + Math.cos(angle) * rad,
+            y: cy + Math.sin(angle) * rad
+          });
+        }
+
+        ctx.beginPath();
+        const mid0x = (pts[0].x + pts[1].x) / 2;
+        const mid0y = (pts[0].y + pts[1].y) / 2;
+        ctx.moveTo(mid0x, mid0y);
+
+        for (let i = 1; i < pts.length; i++) {
+          const next = pts[(i + 1) % pts.length];
+          const midX = (pts[i].x + next.x) / 2;
+          const midY = (pts[i].y + next.y) / 2;
+          ctx.quadraticCurveTo(pts[i].x, pts[i].y, midX, midY);
+        }
+
+        const midLastX = (pts[0].x + pts[1].x) / 2;
+        const midLastY = (pts[0].y + pts[1].y) / 2;
+        ctx.quadraticCurveTo(pts[0].x, pts[0].y, midLastX, midLastY);
+        ctx.closePath();
+
+        ctx.fillStyle = fillStyle || '#ffffff';
+        ctx.fill();
+      }
+
+      function renderFrame() {
+        requestAnimationFrame(renderFrame);
+
+        // 1. POINTER FLOAT PARALLAX PHYSICS ON CENTRAL FLOWER
+        const targetFloatX = isHovering ? ((mouseX / window.innerWidth) - 0.5) * 36 : 0;
+        const targetFloatY = isHovering ? ((mouseY / window.innerHeight) - 0.5) * 24 : 0;
+        const targetFloatRot = isHovering ? ((mouseX / window.innerWidth) - 0.5) * 4.0 : 0;
+
+        floatX += (targetFloatX - floatX) * 0.08;
+        floatY += (targetFloatY - floatY) * 0.08;
+        floatRot += (targetFloatRot - floatRot) * 0.08;
+
+        // Apply smooth floating spring transform to inner wrapper
+        if (floatWrap) {
+          floatWrap.style.transform = `translate3d(${floatX.toFixed(2)}px, ${floatY.toFixed(2)}px, 0) rotate(${floatRot.toFixed(2)}deg)`;
+        }
+
+        // 2. CHECK SIZE RECT
+        const rect = flower.getBoundingClientRect();
+        if (width === 0 || height === 0 || Math.abs(rect.width - width) > 4 || Math.abs(rect.height - height) > 4) {
+          if (rect.width > 20 && rect.height > 20) {
+            width = Math.floor(rect.width);
+            height = Math.floor(rect.height);
+            canvasBg.width = width;
+            canvasBg.height = height;
+            canvasTop.width = width;
+            canvasTop.height = height;
+          }
+        }
+
+        if (width === 0 || height === 0) return;
+
+        // 3. MORPH REVEAL TRAIL HEAD & TAIL
+        const targetR = isHovering ? TRAIL_HEAD_R : 0;
+        headRadius += (targetR - headRadius) * (isHovering ? 0.14 : 0.04);
+
+        const fx = mouseX - rect.left;
+        const fy = mouseY - rect.top;
+
+        if (isHovering && headRadius > 5) {
+          const dist = Math.hypot(fx - lastSampleX, fy - lastSampleY);
+          if (dist > TRAIL_SAMPLE_DIST) {
+            trailPoints.unshift({
+              x: fx,
+              y: fy,
+              r: headRadius,
+              alpha: 1,
+              seed: Math.random() * 100
+            });
+            if (trailPoints.length > TRAIL_MAX_POINTS) {
+              trailPoints.pop();
+            }
+            lastSampleX = fx;
+            lastSampleY = fy;
+          }
+        }
+
+        for (let i = trailPoints.length - 1; i >= 0; i--) {
+          const pt = trailPoints[i];
+          pt.alpha *= TRAIL_FADE_SPEED;
+          pt.r *= 0.995;
+          if (pt.alpha < 0.01) {
+            trailPoints.splice(i, 1);
+          }
+        }
+
+        time += 0.016;
+
+        // If no active points, reset top layer to masked out
+        if (trailPoints.length === 0 && headRadius < 0.5) {
+          layerTop.style.webkitMaskImage = 'linear-gradient(#0000, #0000)';
+          layerTop.style.maskImage = 'linear-gradient(#0000, #0000)';
+          layerBg.style.webkitMaskImage = 'none';
+          layerBg.style.maskImage = 'none';
+          return;
+        }
+
+        // 4. LAYER BG (PUNCH HOLES)
+        ctxBg.clearRect(0, 0, width, height);
+        ctxBg.globalCompositeOperation = 'source-over';
+        ctxBg.fillStyle = '#ffffff';
+        ctxBg.fillRect(0, 0, width, height);
+        ctxBg.globalCompositeOperation = 'destination-out';
+
+        if (isHovering && headRadius > 2) {
+          drawMorphBlob(ctxBg, fx, fy, headRadius, time, 42, 'rgba(0,0,0,1)');
+        }
+        for (let i = 0; i < trailPoints.length; i++) {
+          const pt = trailPoints[i];
+          drawMorphBlob(ctxBg, pt.x, pt.y, pt.r, time, pt.seed, `rgba(0,0,0,${pt.alpha})`);
+        }
+
+        // 5. LAYER TOP (REVEAL PAINT)
+        ctxTop.clearRect(0, 0, width, height);
+        ctxTop.globalCompositeOperation = 'source-over';
+
+        if (isHovering && headRadius > 2) {
+          drawMorphBlob(ctxTop, fx, fy, headRadius, time, 42, 'rgba(255,255,255,1)');
+        }
+        for (let i = 0; i < trailPoints.length; i++) {
+          const pt = trailPoints[i];
+          drawMorphBlob(ctxTop, pt.x, pt.y, pt.r, time, pt.seed, `rgba(255,255,255,${pt.alpha})`);
+        }
+
+        const dataUrlBg = canvasBg.toDataURL('image/png');
+        const dataUrlTop = canvasTop.toDataURL('image/png');
+
+        layerBg.style.webkitMaskImage = `url(${dataUrlBg})`;
+        layerBg.style.maskImage = `url(${dataUrlBg})`;
+
+        layerTop.style.webkitMaskImage = `url(${dataUrlTop})`;
+        layerTop.style.maskImage = `url(${dataUrlTop})`;
+      }
+
+      requestAnimationFrame(renderFrame);
+
+      // 4. FIXED NAVBAR SCROLL TRACKER & LENIS SMOOTH SCROLLING
+      const brandMark = document.querySelector('.brand-mark');
+      const primaryNav = document.querySelector('.primary-nav');
+      const dashboardCta = document.getElementById('dashboard-cta');
+
+      function handleScroll() {
+        const scrolled = window.scrollY > 60;
+        if (brandMark) brandMark.classList.toggle('scrolled', scrolled);
+        if (primaryNav) primaryNav.classList.toggle('scrolled', scrolled);
+        if (dashboardCta) dashboardCta.classList.toggle('scrolled', scrolled);
+        if (burgerBtn) burgerBtn.classList.toggle('scrolled', scrolled);
+      }
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+
+      if (typeof Lenis !== 'undefined') {
+        const lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          touchMultiplier: 1.8,
+        });
+
+        function lenisRaf(t) {
+          lenis.raf(t);
+          requestAnimationFrame(lenisRaf);
+        }
+        requestAnimationFrame(lenisRaf);
+      }
+
+      // 5. MISSION SECTION CURSOR GRID ENGINE
+      (function initMissionGrid() {
+        const container = document.getElementById('mission-grid-container');
+        const canvas = document.getElementById('mission-grid-canvas');
+        if (!container || !canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const cellSize = 64;
+        const color = [92, 84, 21]; // #5C5415 rich earthen olive
+        const radius = 160;
+        const maxOpacity = 0.38;
+        const fillOpacity = 0.06;
+        const gridOpacity = 0.035;
+        const holdTime = 300;
+        const fadeDuration = 700;
+
+        let cols = 0, rows = 0, offX = 0, offY = 0;
+        let alphas = new Float32Array(0);
+        let touched = new Float64Array(0);
+        let w = 0, h = 0;
+        let lastFrame = 0;
+        let running = false;
+
+        function rebuild() {
+          const rect = container.getBoundingClientRect();
+          w = container.offsetWidth || Math.round(rect.width) || window.innerWidth;
+          h = container.offsetHeight || Math.round(rect.height) || window.innerHeight;
+          if (w === 0 || h === 0) return;
+
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.max(1, Math.round(w * dpr));
+          canvas.height = Math.max(1, Math.round(h * dpr));
+          canvas.style.width = w + 'px';
+          canvas.style.height = h + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+          cols = Math.ceil(w / cellSize) + 1;
+          rows = Math.ceil(h / cellSize) + 1;
+          offX = (w - cols * cellSize) / 2;
+          offY = (h - rows * cellSize) / 2;
+          alphas = new Float32Array(cols * rows);
+          touched = new Float64Array(cols * rows);
+        }
+
+        function cellCenter(i) {
+          return [
+            offX + (i % cols) * cellSize + cellSize / 2,
+            offY + Math.floor(i / cols) * cellSize + cellSize / 2
+          ];
+        }
+
+        function energize(x, y) {
+          if (alphas.length === 0 || cols === 0 || rows === 0) {
+            rebuild();
+          }
+          if (alphas.length === 0) return;
+
+          const now = performance.now();
+          const minCol = Math.max(0, Math.floor((x - radius - offX) / cellSize));
+          const maxCol = Math.min(cols - 1, Math.floor((x + radius - offX) / cellSize));
+          const minRow = Math.max(0, Math.floor((y - radius - offY) / cellSize));
+          const maxRow = Math.min(rows - 1, Math.floor((y + radius - offY) / cellSize));
+
+          for (let r = minRow; r <= maxRow; r++) {
+            for (let c = minCol; c <= maxCol; c++) {
+              const i = r * cols + c;
+              if (i < 0 || i >= alphas.length) continue;
+              const [cx, cy] = cellCenter(i);
+              const dist = Math.hypot(cx - x, cy - y);
+              if (dist > radius) continue;
+              const t = 1 - dist / radius;
+              const level = (t * t * (3 - 2 * t)) * maxOpacity;
+              if (level > alphas[i]) {
+                alphas[i] = level;
+                touched[i] = now;
+              } else if (level > 0) {
+                touched[i] = now;
+              }
+            }
+          }
+        }
+
+        function draw(now) {
+          if (w === 0 || h === 0 || alphas.length === 0) {
+            rebuild();
+          }
+          if (w === 0 || h === 0) return;
+
+          const dt = Math.min(now - lastFrame, 50);
+          lastFrame = now;
+          ctx.clearRect(0, 0, w, h);
+
+          if (gridOpacity > 0) {
+            ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${gridOpacity})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let c = 0; c <= cols; c++) {
+              const x = Math.round(offX + c * cellSize) + 0.5;
+              ctx.moveTo(x, 0); ctx.lineTo(x, h);
+            }
+            for (let r = 0; r <= rows; r++) {
+              const y = Math.round(offY + r * cellSize) + 0.5;
+              ctx.moveTo(0, y); ctx.lineTo(w, y);
+            }
+            ctx.stroke();
+          }
+
+          let anyVisible = false;
+          const fadeStep = dt / fadeDuration;
+          const half = cellSize / 2;
+
+          for (let i = 0; i < alphas.length; i++) {
+            let a = alphas[i];
+            if (a <= 0.005) continue;
+            if (now - touched[i] > holdTime) {
+              a = Math.max(0, a - fadeStep);
+              alphas[i] = a;
+              if (a <= 0.005) continue;
+            }
+            anyVisible = true;
+
+            const [cx, cy] = cellCenter(i);
+            const x = cx - half + 0.5;
+            const y = cy - half + 0.5;
+            const s = cellSize - 1;
+
+            ctx.beginPath();
+            if (typeof ctx.roundRect === 'function') {
+              ctx.roundRect(x, y, s, s, 3);
+            } else {
+              ctx.rect(x, y, s, s);
+            }
+            if (fillOpacity > 0) {
+              ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${a * fillOpacity})`;
+              ctx.fill();
+            }
+            ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${a * 0.95})`;
+            ctx.lineWidth = 1.3;
+            ctx.stroke();
+          }
+
+          if (anyVisible) {
+            requestAnimationFrame(draw);
+          } else {
+            running = false;
+            if (gridOpacity > 0) {
+              ctx.clearRect(0, 0, w, h);
+              ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${gridOpacity})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              for (let c = 0; c <= cols; c++) {
+                const x = Math.round(offX + c * cellSize) + 0.5;
+                ctx.moveTo(x, 0); ctx.lineTo(x, h);
+              }
+              for (let r = 0; r <= rows; r++) {
+                const y = Math.round(offY + r * cellSize) + 0.5;
+                ctx.moveTo(0, y); ctx.lineTo(w, y);
+              }
+              ctx.stroke();
+            }
+          }
+        }
+
+        function wake() {
+          if (running) return;
+          running = true;
+          lastFrame = performance.now();
+          requestAnimationFrame(draw);
+        }
+
+        setTimeout(() => { rebuild(); wake(); }, 50);
+        setTimeout(() => { rebuild(); wake(); }, 300);
+        setTimeout(() => { rebuild(); wake(); }, 1000);
+        window.addEventListener('resize', () => { rebuild(); wake(); });
+        rebuild();
+        wake();
+
+        window.addEventListener('pointermove', (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          if (x >= -radius && x <= rect.width + radius && y >= -radius && y <= rect.height + radius) {
+            energize(x, y);
+            wake();
+          }
+        }, { passive: true });
+
+        window.addEventListener('scroll', wake, { passive: true });
+      })();
+
+      // 6. ABOUT SECTION CURSOR GRID ENGINE
+      (function initAboutGrid() {
+        const container = document.getElementById('about-grid-container');
+        const canvas = document.getElementById('about-grid-canvas');
+        if (!container || !canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const cellSize = 64;
+        const color = [92, 84, 21];
+        const radius = 160;
+        const holdTime = 300;
+        const fadeDuration = 700;
+        const maxOpacity = 0.38;
+        const fillOpacity = 0.06;
+        const gridOpacity = 0.035;
+
+        let cols = 0, rows = 0, offX = 0, offY = 0;
+        let cellTimes = new Float64Array(0);
+        let cellTargetOpacities = new Float32Array(0);
+        let cellCurrentOpacities = new Float32Array(0);
+        let w = 0, h = 0;
+        let running = false;
+        let lastFrame = performance.now();
+
+        function rebuild() {
+          const rect = container.getBoundingClientRect();
+          w = rect.width || window.innerWidth;
+          h = rect.height || window.innerHeight;
+          if (w === 0 || h === 0) return;
+
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.round(w * dpr);
+          canvas.height = Math.round(h * dpr);
+          canvas.style.width = w + 'px';
+          canvas.style.height = h + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+          cols = Math.ceil(w / cellSize);
+          rows = Math.ceil(h / cellSize);
+          offX = (w - cols * cellSize) / 2;
+          offY = (h - rows * cellSize) / 2;
+
+          const count = cols * rows;
+          cellTimes = new Float64Array(count);
+          cellTargetOpacities = new Float32Array(count);
+          cellCurrentOpacities = new Float32Array(count);
+        }
+
+        function energize(cx, cy) {
+          if (cols === 0 || rows === 0) rebuild();
+          const now = performance.now();
+          const r2 = radius * radius;
+          const minC = Math.max(0, Math.floor((cx - radius - offX) / cellSize));
+          const maxC = Math.min(cols - 1, Math.ceil((cx + radius - offX) / cellSize));
+          const minR = Math.max(0, Math.floor((cy - radius - offY) / cellSize));
+          const maxR = Math.min(rows - 1, Math.ceil((cy + radius - offY) / cellSize));
+
+          for (let r = minR; r <= maxR; r++) {
+            const y = offY + r * cellSize + cellSize * 0.5;
+            for (let c = minC; c <= maxC; c++) {
+              const x = offX + c * cellSize + cellSize * 0.5;
+              const d2 = (x - cx) * (x - cx) + (y - cy) * (y - cy);
+              if (d2 <= r2) {
+                const dist = Math.sqrt(d2);
+                const rawStrength = 1 - dist / radius;
+                const strength = rawStrength * rawStrength * (3 - 2 * rawStrength);
+                const targetOp = strength * maxOpacity;
+                const idx = r * cols + c;
+                if (targetOp > cellTargetOpacities[idx]) {
+                  cellTargetOpacities[idx] = targetOp;
+                }
+                cellTimes[idx] = now;
+              }
+            }
+          }
+        }
+
+        function draw() {
+          const now = performance.now();
+          const dt = (now - lastFrame) / 1000;
+          lastFrame = now;
+          if (w === 0 || h === 0) rebuild();
+          ctx.clearRect(0, 0, w, h);
+
+          if (gridOpacity > 0) {
+            ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${gridOpacity})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let c = 0; c <= cols; c++) {
+              const x = Math.round(offX + c * cellSize) + 0.5;
+              ctx.moveTo(x, 0); ctx.lineTo(x, h);
+            }
+            for (let r = 0; r <= rows; r++) {
+              const y = Math.round(offY + r * cellSize) + 0.5;
+              ctx.moveTo(0, y); ctx.lineTo(w, y);
+            }
+            ctx.stroke();
+          }
+
+          let anyVisible = false;
+          const count = cols * rows;
+          const pad = 2;
+          const s = cellSize - pad * 2;
+
+          for (let i = 0; i < count; i++) {
+            const elapsed = now - cellTimes[i];
+            let target = 0;
+            if (elapsed < holdTime) {
+              target = cellTargetOpacities[i];
+            } else if (elapsed < holdTime + fadeDuration) {
+              const fadeP = (elapsed - holdTime) / fadeDuration;
+              target = cellTargetOpacities[i] * (1 - fadeP);
+            } else {
+              cellTargetOpacities[i] = 0;
+            }
+
+            const diff = target - cellCurrentOpacities[i];
+            if (Math.abs(diff) > 0.003) {
+              cellCurrentOpacities[i] += diff * Math.min(1, dt * 14);
+            } else {
+              cellCurrentOpacities[i] = target;
+            }
+
+            const a = cellCurrentOpacities[i];
+            if (a <= 0.005) continue;
+            anyVisible = true;
+
+            const c = i % cols;
+            const r = Math.floor(i / cols);
+            const x = offX + c * cellSize + pad;
+            const y = offY + r * cellSize + pad;
+
+            ctx.beginPath();
+            ctx.roundRect(x, y, s, s, 2);
+            if (fillOpacity > 0) {
+              ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${a * fillOpacity})`;
+              ctx.fill();
+            }
+            ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${a * 0.95})`;
+            ctx.lineWidth = 1.3;
+            ctx.stroke();
+          }
+
+          if (anyVisible) {
+            requestAnimationFrame(draw);
+          } else {
+            running = false;
+          }
+        }
+
+        function wake() {
+          if (running) return;
+          running = true;
+          lastFrame = performance.now();
+          requestAnimationFrame(draw);
+        }
+
+        setTimeout(() => { rebuild(); wake(); }, 100);
+        window.addEventListener('resize', () => { rebuild(); wake(); });
+        rebuild();
+        wake();
+
+        window.addEventListener('pointermove', (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          if (x >= -radius && x <= rect.width + radius && y >= -radius && y <= rect.height + radius) {
+            energize(x, y);
+            wake();
+          }
+        }, { passive: true });
+
+        window.addEventListener('scroll', wake, { passive: true });
+      })();
+
+      // 7. CIRCULAR 3D TESTIMONIALS ENGINE
+      (function initCircularTestimonials() {
+        const testimonials = [
+          {
+            name: "Shauryaditya Pratap Singh",
+            designation: "Backend Architect & Design Lead",
+            quote: "Architecting core backend telemetry pipelines, IoT data layers, and API connections while providing the primary design language of FasalMitra. Better at Valorant than Faraz Athar.",
+            src: "/images/shauryaditya.jpg"
+          },
+          {
+            name: "Faraz Athar",
+            designation: "Frontend Designer & UI/UX Specialist",
+            quote: "Responsible for creating modern, high-fidelity, and interactive UI/UX experiences that capture attention, feel alive, and make complex agronomy effortless. The IGL.",
+            src: "/images/faraz.jpg"
+          },
+          {
+            name: "Shauryaditya & Faraz",
+            designation: "Co-Founders & High School Builders",
+            quote: "Just two high school kids trying to code our way through the world, learn to build new things, and solve real problems to help the world.",
+            src: "/images/team-duo.jpg"
+          }
+        ];
+
+        let activeIndex = 0;
+        const total = testimonials.length;
+        const images = document.querySelectorAll('.testimonial-card-img');
+        const nameEl = document.getElementById('builder-name');
+        const desigEl = document.getElementById('builder-designation');
+        const quoteEl = document.getElementById('builder-quote');
+        const dots = document.querySelectorAll('.builder-dot');
+        const prevBtn = document.getElementById('builder-prev-btn');
+        const nextBtn = document.getElementById('builder-next-btn');
+        const container = document.querySelector('.testimonial-image-stage');
+        let autoplayTimer = null;
+
+        function calcGap(w) {
+          const minW = 1024, maxW = 1456, minG = 60, maxG = 86;
+          if (w <= minW) return minG;
+          if (w >= maxW) return Math.max(minG, maxG + 0.06018 * (w - maxW));
+          return minG + (maxG - minG) * ((w - minW) / (maxW - minW));
+        }
+
+        function updateLayout() {
+          const containerWidth = container ? container.offsetWidth : 400;
+          const gap = calcGap(containerWidth);
+          const maxStickUp = gap * 0.75;
+
+          images.forEach((img, idx) => {
+            const isActive = idx === activeIndex;
+            const isLeft = (activeIndex - 1 + total) % total === idx;
+            const isRight = (activeIndex + 1) % total === idx;
+
+            if (isActive) {
+              img.style.zIndex = '3';
+              img.style.opacity = '1';
+              img.style.pointerEvents = 'auto';
+              img.style.transform = `translateX(0px) translateY(0px) scale(1) rotateY(0deg)`;
+              img.style.transition = 'all 0.8s cubic-bezier(.4,2,.3,1)';
+            } else if (isLeft) {
+              img.style.zIndex = '2';
+              img.style.opacity = '0.88';
+              img.style.pointerEvents = 'auto';
+              img.style.transform = `translateX(-${gap}px) translateY(-${maxStickUp}px) scale(0.85) rotateY(15deg)`;
+              img.style.transition = 'all 0.8s cubic-bezier(.4,2,.3,1)';
+            } else if (isRight) {
+              img.style.zIndex = '2';
+              img.style.opacity = '0.88';
+              img.style.pointerEvents = 'auto';
+              img.style.transform = `translateX(${gap}px) translateY(-${maxStickUp}px) scale(0.85) rotateY(-15deg)`;
+              img.style.transition = 'all 0.8s cubic-bezier(.4,2,.3,1)';
+            } else {
+              img.style.zIndex = '1';
+              img.style.opacity = '0';
+              img.style.pointerEvents = 'none';
+              img.style.transform = `translateX(0px) translateY(0px) scale(0.7)`;
+              img.style.transition = 'all 0.8s cubic-bezier(.4,2,.3,1)';
+            }
+          });
+
+          // Update texts with word reveal
+          const current = testimonials[activeIndex];
+          if (nameEl) nameEl.textContent = current.name;
+          if (desigEl) desigEl.textContent = current.designation;
+          if (quoteEl) {
+            quoteEl.innerHTML = '';
+            const words = current.quote.split(' ');
+            words.forEach((w, i) => {
+              const span = document.createElement('span');
+              span.className = 'builder-word';
+              span.textContent = w + ' ';
+              quoteEl.appendChild(span);
+              setTimeout(() => {
+                span.classList.add('visible');
+              }, 20 + i * 16);
+            });
+          }
+
+          // Update dots
+          dots.forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === activeIndex);
+          });
+        }
+
+        function setActive(idx) {
+          activeIndex = (idx + total) % total;
+          updateLayout();
+        }
+
+        images.forEach((img, idx) => {
+          img.addEventListener('click', () => setActive(idx));
+        });
+
+        if (prevBtn) prevBtn.addEventListener('click', () => setActive(activeIndex - 1));
+        if (nextBtn) nextBtn.addEventListener('click', () => setActive(activeIndex + 1));
+
+        dots.forEach((dot, idx) => {
+          dot.addEventListener('click', () => setActive(idx));
+        });
+
+        window.addEventListener('keydown', (e) => {
+          const aboutSection = document.getElementById('about');
+          if (!aboutSection) return;
+          const rect = aboutSection.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            if (e.key === 'ArrowLeft') setActive(activeIndex - 1);
+            if (e.key === 'ArrowRight') setActive(activeIndex + 1);
+          }
+        });
+
+        window.addEventListener('resize', updateLayout);
+        updateLayout();
+      })();
+
+      // 8. TECH SECTION CURSOR GRID ENGINE
+      (function initTechGrid() {
+        const container = document.getElementById('tech-grid-container');
+        const canvas = document.getElementById('tech-grid-canvas');
+        if (!container || !canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const cellSize = 64;
+        const color = [92, 84, 21];
+        const radius = 160;
+        const holdTime = 300;
+        const fadeDuration = 700;
+        const maxOpacity = 0.38;
+        const fillOpacity = 0.06;
+        const gridOpacity = 0.035;
+
+        let w = 0, h = 0, cols = 0, rows = 0;
+        let alphas = [], touched = [];
+        let offX = 0, offY = 0;
+        let running = false;
+        let lastFrame = performance.now();
+
+        function rebuild() {
+          const dpr = window.devicePixelRatio || 1;
+          w = container.offsetWidth || window.innerWidth;
+          h = container.offsetHeight || window.innerHeight;
+          if (w === 0 || h === 0) return;
+
+          canvas.width = w * dpr;
+          canvas.height = h * dpr;
+          canvas.style.width = w + 'px';
+          canvas.style.height = h + 'px';
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.scale(dpr, dpr);
+
+          cols = Math.ceil(w / cellSize);
+          rows = Math.ceil(h / cellSize);
+          offX = (w - cols * cellSize) / 2;
+          offY = (h - rows * cellSize) / 2;
+
+          const count = cols * rows;
+          alphas = new Float32Array(count);
+          touched = new Float64Array(count);
+        }
+
+        function cellCenter(i) {
+          const r = Math.floor(i / cols);
+          const c = i % cols;
+          return [offX + c * cellSize + cellSize / 2, offY + r * cellSize + cellSize / 2];
+        }
+
+        function energize(x, y) {
+          if (alphas.length === 0) return;
+          const now = performance.now();
+          const minCol = Math.max(0, Math.floor((x - radius - offX) / cellSize));
+          const maxCol = Math.min(cols - 1, Math.floor((x + radius - offX) / cellSize));
+          const minRow = Math.max(0, Math.floor((y - radius - offY) / cellSize));
+          const maxRow = Math.min(rows - 1, Math.floor((y + radius - offY) / cellSize));
+
+          for (let r = minRow; r <= maxRow; r++) {
+            for (let c = minCol; c <= maxCol; c++) {
+              const i = r * cols + c;
+              if (i < 0 || i >= alphas.length) continue;
+              const [cx, cy] = cellCenter(i);
+              const dist = Math.hypot(cx - x, cy - y);
+              if (dist > radius) continue;
+              const t = 1 - dist / radius;
+              const level = (t * t * (3 - 2 * t)) * maxOpacity;
+              if (level > alphas[i]) {
+                alphas[i] = level;
+                touched[i] = now;
+              } else if (level > 0) {
+                touched[i] = now;
+              }
+            }
+          }
+        }
+
+        function draw(now) {
+          if (w === 0 || h === 0 || alphas.length === 0) {
+            rebuild();
+          }
+          if (w === 0 || h === 0) return;
+
+          const dt = Math.min(now - lastFrame, 50);
+          lastFrame = now;
+          ctx.clearRect(0, 0, w, h);
+
+          if (gridOpacity > 0) {
+            ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${gridOpacity})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let c = 0; c <= cols; c++) {
+              const x = Math.round(offX + c * cellSize) + 0.5;
+              ctx.moveTo(x, 0); ctx.lineTo(x, h);
+            }
+            for (let r = 0; r <= rows; r++) {
+              const y = Math.round(offY + r * cellSize) + 0.5;
+              ctx.moveTo(0, y); ctx.lineTo(w, y);
+            }
+            ctx.stroke();
+          }
+
+          let anyVisible = false;
+          const fadeStep = dt / fadeDuration;
+          const half = cellSize / 2;
+
+          for (let i = 0; i < alphas.length; i++) {
+            let a = alphas[i];
+            if (a <= 0.005) continue;
+            if (now - touched[i] > holdTime) {
+              a = Math.max(0, a - fadeStep);
+              alphas[i] = a;
+              if (a <= 0.005) continue;
+            }
+            anyVisible = true;
+
+            const [cx, cy] = cellCenter(i);
+            const x = cx - half + 0.5;
+            const y = cy - half + 0.5;
+            const s = cellSize - 1;
+
+            ctx.beginPath();
+            if (typeof ctx.roundRect === 'function') {
+              ctx.roundRect(x, y, s, s, 3);
+            } else {
+              ctx.rect(x, y, s, s);
+            }
+            if (fillOpacity > 0) {
+              ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${a * fillOpacity})`;
+              ctx.fill();
+            }
+            ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${a * 0.95})`;
+            ctx.lineWidth = 1.3;
+            ctx.stroke();
+          }
+
+          if (anyVisible) {
+            requestAnimationFrame(draw);
+          } else {
+            running = false;
+            if (gridOpacity > 0) {
+              ctx.clearRect(0, 0, w, h);
+              ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${gridOpacity})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              for (let c = 0; c <= cols; c++) {
+                const x = Math.round(offX + c * cellSize) + 0.5;
+                ctx.moveTo(x, 0); ctx.lineTo(x, h);
+              }
+              for (let r = 0; r <= rows; r++) {
+                const y = Math.round(offY + r * cellSize) + 0.5;
+                ctx.moveTo(0, y); ctx.lineTo(w, y);
+              }
+              ctx.stroke();
+            }
+          }
+        }
+
+        function wake() {
+          if (running) return;
+          running = true;
+          lastFrame = performance.now();
+          requestAnimationFrame(draw);
+        }
+
+        setTimeout(() => { rebuild(); wake(); }, 50);
+        setTimeout(() => { rebuild(); wake(); }, 300);
+        setTimeout(() => { rebuild(); wake(); }, 1000);
+        window.addEventListener('resize', () => { rebuild(); wake(); });
+        rebuild();
+        wake();
+
+        window.addEventListener('pointermove', (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          if (x >= -radius && x <= rect.width + radius && y >= -radius && y <= rect.height + radius) {
+            energize(x, y);
+            wake();
+          }
+        }, { passive: true });
+
+        window.addEventListener('scroll', wake, { passive: true });
+      })();
+
+      // 9. DYNAMIC WEBGL / 2D CANVAS WARP SHADERS FOR TECH CARDS
+      (function initTechShaders() {
+        const configs = [
+          {
+            proportion: 0.3,
+            softness: 0.8,
+            distortion: 0.15,
+            swirl: 0.6,
+            swirlIterations: 8,
+            shape: 'checks',
+            shapeScale: 0.08,
+            colors: ['hsl(280, 100%, 30%)', 'hsl(320, 100%, 60%)', 'hsl(340, 90%, 40%)', 'hsl(300, 100%, 70%)'],
+          },
+          {
+            proportion: 0.4,
+            softness: 1.2,
+            distortion: 0.2,
+            swirl: 0.9,
+            swirlIterations: 12,
+            shape: 'stripes',
+            shapeScale: 0.12,
+            colors: ['hsl(200, 100%, 25%)', 'hsl(180, 100%, 65%)', 'hsl(160, 90%, 35%)', 'hsl(190, 100%, 75%)'],
+          },
+          {
+            proportion: 0.35,
+            softness: 0.9,
+            distortion: 0.18,
+            swirl: 0.7,
+            swirlIterations: 10,
+            shape: 'checks',
+            shapeScale: 0.1,
+            colors: ['hsl(120, 100%, 25%)', 'hsl(140, 100%, 60%)', 'hsl(100, 90%, 30%)', 'hsl(130, 100%, 70%)'],
+          },
+          {
+            proportion: 0.45,
+            softness: 1.1,
+            distortion: 0.22,
+            swirl: 0.8,
+            swirlIterations: 15,
+            shape: 'stripes',
+            shapeScale: 0.09,
+            colors: ['hsl(30, 100%, 35%)', 'hsl(50, 100%, 65%)', 'hsl(40, 90%, 40%)', 'hsl(45, 100%, 75%)'],
+          },
+          {
+            proportion: 0.38,
+            softness: 0.95,
+            distortion: 0.16,
+            swirl: 0.85,
+            swirlIterations: 11,
+            shape: 'checks',
+            shapeScale: 0.11,
+            colors: ['hsl(250, 100%, 30%)', 'hsl(270, 100%, 65%)', 'hsl(260, 90%, 35%)', 'hsl(265, 100%, 70%)'],
+          },
+          {
+            proportion: 0.42,
+            softness: 1.0,
+            distortion: 0.19,
+            swirl: 0.75,
+            swirlIterations: 9,
+            shape: 'stripes',
+            shapeScale: 0.13,
+            colors: ['hsl(330, 100%, 30%)', 'hsl(350, 100%, 60%)', 'hsl(340, 90%, 35%)', 'hsl(345, 100%, 75%)'],
+          },
+        ];
+
+        function hslToRgb(str) {
+          const m = str.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+          if (!m) return [1, 1, 1];
+          let h = parseFloat(m[1]) / 360;
+          let s = parseFloat(m[2]) / 100;
+          let l = parseFloat(m[3]) / 100;
+          if (s === 0) return [l, l, l];
+          const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+          };
+          const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          const p = 2 * l - q;
+          return [hue2rgb(p, q, h + 1/3), hue2rgb(p, q, h), hue2rgb(p, q, h - 1/3)];
+        }
+
+        const vsSource = `
+          attribute vec2 position;
+          void main() {
+            gl_Position = vec4(position, 0.0, 1.0);
+          }
+        `;
+
+        const fsSource = `
+          precision mediump float;
+          uniform vec2 u_resolution;
+          uniform float u_time;
+          uniform vec3 u_c0;
+          uniform vec3 u_c1;
+          uniform vec3 u_c2;
+          uniform vec3 u_c3;
+          uniform float u_proportion;
+          uniform float u_softness;
+          uniform float u_distortion;
+          uniform float u_swirl;
+          uniform int u_swirlIterations;
+          uniform int u_shape; // 0: checks, 1: stripes
+          uniform float u_shapeScale;
+
+          void main() {
+            vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+            vec2 p = uv * 2.0 - 1.0;
+            p.x *= u_resolution.x / u_resolution.y;
+
+            float t = u_time * 0.8;
+            for (int i = 0; i < 15; i++) {
+              if (i >= u_swirlIterations) break;
+              float r = length(p);
+              float angle = atan(p.y, p.x) + u_swirl * (1.0 / (r + 0.35)) * sin(t * 0.4 + float(i) * 0.5);
+              p = vec2(cos(angle), sin(angle)) * r + vec2(sin(t * 0.3 + float(i)), cos(t * 0.25 + float(i))) * u_distortion;
+            }
+
+            float pattern = 0.0;
+            if (u_shape == 0) {
+              vec2 grid = floor(p / u_shapeScale);
+              pattern = mod(grid.x + grid.y, 2.0);
+            } else {
+              pattern = sin(p.x / u_shapeScale * 3.14159) * 0.5 + 0.5;
+            }
+
+            float factor = smoothstep(0.0, u_softness, pattern);
+            vec3 cA = mix(u_c0, u_c1, clamp((p.x + 1.0) * 0.5 + sin(t) * u_proportion, 0.0, 1.0));
+            vec3 cB = mix(u_c2, u_c3, clamp((p.y + 1.0) * 0.5 + cos(t) * u_proportion, 0.0, 1.0));
+            vec3 color = mix(cA, cB, factor);
+
+            gl_FragColor = vec4(color, 1.0);
+          }
+        `;
+
+        const canvases = document.querySelectorAll('.tech-shader-canvas');
+        const instances = [];
+
+        canvases.forEach((canvas) => {
+          const idx = parseInt(canvas.getAttribute('data-index') || '0', 10);
+          const config = configs[idx % configs.length];
+          const gl = canvas.getContext('webgl', { antialias: false, alpha: false, preserveDrawingBuffer: false });
+
+          if (!gl) return;
+
+          function createShader(type, src) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, src);
+            gl.compileShader(shader);
+            return shader;
+          }
+
+          const vs = createShader(gl.VERTEX_SHADER, vsSource);
+          const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
+          const program = gl.createProgram();
+          gl.attachShader(program, vs);
+          gl.attachShader(program, fs);
+          gl.linkProgram(program);
+
+          const quadBuffer = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,
+             1, -1,
+            -1,  1,
+            -1,  1,
+             1, -1,
+             1,  1,
+          ]), gl.STATIC_DRAW);
+
+          const posLoc = gl.getAttribLocation(program, 'position');
+          const resLoc = gl.getUniformLocation(program, 'u_resolution');
+          const timeLoc = gl.getUniformLocation(program, 'u_time');
+          const c0Loc = gl.getUniformLocation(program, 'u_c0');
+          const c1Loc = gl.getUniformLocation(program, 'u_c1');
+          const c2Loc = gl.getUniformLocation(program, 'u_c2');
+          const c3Loc = gl.getUniformLocation(program, 'u_c3');
+          const propLoc = gl.getUniformLocation(program, 'u_proportion');
+          const softLoc = gl.getUniformLocation(program, 'u_softness');
+          const distLoc = gl.getUniformLocation(program, 'u_distortion');
+          const swirlLoc = gl.getUniformLocation(program, 'u_swirl');
+          const iterLoc = gl.getUniformLocation(program, 'u_swirlIterations');
+          const shapeLoc = gl.getUniformLocation(program, 'u_shape');
+          const scaleLoc = gl.getUniformLocation(program, 'u_shapeScale');
+
+          const rgbColors = config.colors.map(hslToRgb);
+
+          instances.push({
+            canvas, gl, program, quadBuffer, posLoc,
+            resLoc, timeLoc, c0Loc, c1Loc, c2Loc, c3Loc,
+            propLoc, softLoc, distLoc, swirlLoc, iterLoc,
+            shapeLoc, scaleLoc, config, rgbColors
+          });
+        });
+
+        function resize() {
+          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          instances.forEach(({ canvas, gl }) => {
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.round(rect.width * dpr);
+            const h = Math.round(rect.height * dpr);
+            if (canvas.width !== w || canvas.height !== h) {
+              canvas.width = w;
+              canvas.height = h;
+              gl.viewport(0, 0, w, h);
+            }
+          });
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        let startTime = performance.now();
+        function renderShaders(now) {
+          const t = (now - startTime) * 0.001;
+          instances.forEach((inst) => {
+            const { gl, program, quadBuffer, posLoc, resLoc, timeLoc, c0Loc, c1Loc, c2Loc, c3Loc,
+                    propLoc, softLoc, distLoc, swirlLoc, iterLoc, shapeLoc, scaleLoc, config, rgbColors, canvas } = inst;
+
+            gl.useProgram(program);
+            gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+            gl.enableVertexAttribArray(posLoc);
+            gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+            gl.uniform2f(resLoc, canvas.width, canvas.height);
+            gl.uniform1f(timeLoc, t);
+            gl.uniform3fv(c0Loc, rgbColors[0]);
+            gl.uniform3fv(c1Loc, rgbColors[1]);
+            gl.uniform3fv(c2Loc, rgbColors[2]);
+            gl.uniform3fv(c3Loc, rgbColors[3]);
+            gl.uniform1f(propLoc, config.proportion);
+            gl.uniform1f(softLoc, config.softness);
+            gl.uniform1f(distLoc, config.distortion);
+            gl.uniform1f(swirlLoc, config.swirl);
+            gl.uniform1i(iterLoc, config.swirlIterations);
+            gl.uniform1i(shapeLoc, config.shape === 'checks' ? 0 : 1);
+            gl.uniform1f(scaleLoc, config.shapeScale);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+          });
+
+          requestAnimationFrame(renderShaders);
+        }
+
+        requestAnimationFrame(renderShaders);
+      })();
+
+      // 10. SCROLL CHOREOGRAPHY & FULLSCREEN HERO CTA ENGINE
+      (function initScrollChoreography() {
+        const section = document.getElementById('experience');
+        const cardTL = document.getElementById('card-tl');
+        const cardBR = document.getElementById('card-br');
+        const cardBL = document.getElementById('card-bl');
+        const cardHero = document.getElementById('card-tr-hero');
+        const heroVignette = document.getElementById('hero-vignette');
+        const ctaWrap = document.getElementById('choreography-cta');
+
+        if (!section || !cardTL || !cardBR || !cardBL || !cardHero || !ctaWrap) return;
+
+        let smoothP = 0;
+        let targetP = 0;
+
+        function interpolate(p, inRange, outRange) {
+          if (p <= inRange[0]) return outRange[0];
+          if (p >= inRange[inRange.length - 1]) return outRange[outRange.length - 1];
+          for (let i = 0; i < inRange.length - 1; i++) {
+            if (p >= inRange[i] && p <= inRange[i + 1]) {
+              const t = (p - inRange[i]) / (inRange[i + 1] - inRange[i]);
+              return outRange[i] + t * (outRange[i + 1] - outRange[i]);
+            }
+          }
+          return outRange[0];
+        }
+
+        function update() {
+          const rect = section.getBoundingClientRect();
+          const totalScroll = rect.height - window.innerHeight;
+          const currentScroll = -rect.top;
+          targetP = Math.max(0, Math.min(1, currentScroll / totalScroll));
+
+          // Smooth spring-like lerp
+          smoothP += (targetP - smoothP) * 0.12;
+
+          const p = smoothP;
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+
+          const xLeft = -0.22 * vw;
+          const xRight = 0.22 * vw;
+          const yTop = -0.15 * vh;
+          const yBottom = 0.15 * vh;
+
+          // Phase 1: 0 - 0.3 (Diagonal movement)
+          // Phase 2: 0.35 - 0.65 (Stack alignment to center)
+          // Phase 3: 0.7 - 0.9 (Top Right expands to full screen)
+
+          // Top Left -> moves to Bottom Left, then to Center
+          const tlX = interpolate(p, [0, 0.3, 0.35, 0.65, 1], [xLeft, xLeft, xLeft, 0, 0]);
+          const tlY = interpolate(p, [0, 0.3, 0.35, 0.65, 1], [yTop, yBottom, yBottom, 0, 0]);
+
+          // Bottom Right -> moves to Top Right, then to Center
+          const brX = interpolate(p, [0, 0.3, 0.35, 0.65, 1], [xRight, xRight, xRight, 0, 0]);
+          const brY = interpolate(p, [0, 0.3, 0.35, 0.65, 1], [yBottom, yTop, yTop, 0, 0]);
+
+          // Bottom Left -> stays, then moves to Center
+          const blX = interpolate(p, [0, 0.3, 0.35, 0.65, 1], [xLeft, xLeft, xLeft, 0, 0]);
+          const blY = interpolate(p, [0, 0.3, 0.35, 0.65, 1], [yBottom, yBottom, yBottom, 0, 0]);
+
+          // Top Right -> stays, then moves to Center, then expands
+          const trX = interpolate(p, [0, 0.3, 0.35, 0.65, 1], [xRight, xRight, xRight, 0, 0]);
+          const trY = interpolate(p, [0, 0.3, 0.35, 0.65, 1], [yTop, yTop, yTop, 0, 0]);
+
+          // Hero dimensions
+          const heroW = interpolate(p, [0.65, 0.7, 0.92, 1], [0.42 * vw, 0.42 * vw, vw, vw]);
+          const heroH = interpolate(p, [0.65, 0.7, 0.92, 1], [0.28 * vh, 0.28 * vh, vh, vh]);
+          const heroRadius = interpolate(p, [0.75, 0.92], [24, 0]);
+
+          // Opacity of under images
+          const underOpacity = interpolate(p, [0.72, 0.85], [1, 0]);
+
+          cardTL.style.transform = `translate(-50%, -50%) translate3d(${tlX}px, ${tlY}px, 0)`;
+          cardTL.style.opacity = underOpacity;
+
+          cardBR.style.transform = `translate(-50%, -50%) translate3d(${brX}px, ${brY}px, 0)`;
+          cardBR.style.opacity = underOpacity;
+
+          cardBL.style.transform = `translate(-50%, -50%) translate3d(${blX}px, ${blY}px, 0)`;
+          cardBL.style.opacity = underOpacity;
+
+          cardHero.style.transform = `translate(-50%, -50%) translate3d(${trX}px, ${trY}px, 0)`;
+          cardHero.style.width = `${heroW}px`;
+          cardHero.style.height = `${heroH}px`;
+          cardHero.style.borderRadius = `${heroRadius}px`;
+
+          // CTA & Vignette
+          const ctaOp = interpolate(p, [0.85, 0.96], [0, 1]);
+          const ctaSc = interpolate(p, [0.85, 0.96], [0.85, 1]);
+          if (heroVignette) heroVignette.style.opacity = ctaOp;
+          ctaWrap.style.opacity = ctaOp;
+          ctaWrap.style.transform = `scale(${ctaSc})`;
+          ctaWrap.style.pointerEvents = p > 0.88 ? 'auto' : 'none';
+
+          requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
+      })();
+
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/ingest-mandi-prices",
+      "schedule": "30 15 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-weather-cache",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
