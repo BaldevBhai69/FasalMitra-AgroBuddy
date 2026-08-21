@@ -134,8 +134,10 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
     let raf = 0;
     let last = performance.now();
     let clock = 0;
+    let isVisible = false;
 
     const frame = (now: number) => {
+      if (!isVisible) return;
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       clock += dt;
@@ -152,6 +154,18 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
       place();
       raf = requestAnimationFrame(frame);
     };
+
+    const io = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) {
+        last = performance.now();
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(frame);
+      } else {
+        cancelAnimationFrame(raf);
+      }
+    }, { threshold: 0.05 });
+    io.observe(root);
 
     const onMove = (e: PointerEvent) => {
       const s = settingsRef.current;
@@ -170,10 +184,10 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
 
     root.addEventListener('pointermove', onMove);
     root.addEventListener('pointerleave', onLeave);
-    raf = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       ro.disconnect();
       root.removeEventListener('pointermove', onMove);
       root.removeEventListener('pointerleave', onLeave);

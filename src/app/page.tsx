@@ -29,15 +29,15 @@ export default function HomePage() {
       window.scrollTo(0, 0);
     }
 
-    // 0. Initialize Lenis Smooth Scrolling
+    // 0. Initialize Lenis Smooth Scrolling (Silky-Smooth 60fps Uniform Velocity)
     const lenis = new Lenis({
-      duration: 1.4,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.09,
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 0.85,
+      touchMultiplier: 1.0,
+      infinite: false,
     });
 
     lenis.scrollTo(0, { immediate: true });
@@ -187,8 +187,15 @@ export default function HomePage() {
       ctx.fill();
     }
 
+    let isMaskActive = false;
+
     function renderFrame() {
       animFrameId = requestAnimationFrame(renderFrame);
+
+      // Skip entire frame computation if Hero is scrolled out of viewport
+      if (typeof window !== 'undefined' && window.scrollY > window.innerHeight * 0.9) {
+        return;
+      }
 
       // 1. POINTER FLOAT PARALLAX PHYSICS ON CENTRAL FLOWER
       const targetFloatX = isHovering ? ((mouseX / window.innerWidth) - 0.5) * 36 : 0;
@@ -197,6 +204,7 @@ export default function HomePage() {
 
       floatX += (targetFloatX - floatX) * 0.08;
       floatY += (targetFloatY - floatY) * 0.08;
+      floatRot += (targetFloatRot - floatRot) * 0.08;
       const floatWrap = floatWrapRef.current;
       if (floatWrap) {
         floatWrap.style.transform = `translate3d(${floatX.toFixed(2)}px, ${floatY.toFixed(2)}px, 0) rotate(${floatRot.toFixed(2)}deg)`;
@@ -256,12 +264,17 @@ export default function HomePage() {
       time += 0.016;
 
       if (trailPoints.length === 0 && headRadius < 0.5) {
-        layerTop.style.webkitMaskImage = 'linear-gradient(#0000, #0000)';
-        layerTop.style.maskImage = 'linear-gradient(#0000, #0000)';
-        layerBg.style.webkitMaskImage = 'none';
-        layerBg.style.maskImage = 'none';
+        if (isMaskActive) {
+          layerTop.style.webkitMaskImage = 'linear-gradient(#0000, #0000)';
+          layerTop.style.maskImage = 'linear-gradient(#0000, #0000)';
+          layerBg.style.webkitMaskImage = 'none';
+          layerBg.style.maskImage = 'none';
+          isMaskActive = false;
+        }
         return;
       }
+
+      isMaskActive = true;
 
       // BG Canvas: punch holes
       ctxBg.clearRect(0, 0, width, height);
