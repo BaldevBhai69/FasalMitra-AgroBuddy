@@ -116,9 +116,9 @@ export default function SingleCropPage() {
           newMoisture = Math.round(Number(weatherRes.data.daily[0].soilMoisture0To7cm) * 100);
         }
         if (weatherRes.data.current?.soilTemperatureC !== undefined) {
-          newTemp = Number(weatherRes.data.current.soilTemperatureC);
-        } else if (weatherRes.data.current?.temperatureC) {
-          newTemp = Number(weatherRes.data.current.temperatureC);
+          newTemp = Number(Number(weatherRes.data.current.soilTemperatureC).toFixed(1));
+        } else if (weatherRes.data.current?.temperatureC !== undefined) {
+          newTemp = Number(Number(weatherRes.data.current.temperatureC).toFixed(1));
         }
       }
 
@@ -484,8 +484,12 @@ export default function SingleCropPage() {
                   </div>
                   <div className="p-4 rounded-xl bg-[#F9F3E6] border border-[#E8DFD0] space-y-1">
                     <span className="text-[10px] text-[#8A7E6B] block uppercase">Temp</span>
-                    <span className="text-xl font-bold text-[#2D2A26] block">{weather?.current?.temperatureC || 28.5}°C</span>
-                    <span className="text-[10px] text-[#8A7E6B]">Humidity: {weather?.current?.humidityPct || 65}%</span>
+                    <span className="text-xl font-bold text-[#2D2A26] block">
+                      {weather?.current?.temperatureC !== undefined
+                        ? Number(weather.current.temperatureC).toFixed(1)
+                        : (liveIot.temp !== undefined ? Number(liveIot.temp).toFixed(1) : '28.5')}°C
+                    </span>
+                    <span className="text-[10px] text-[#8A7E6B]">Humidity: {Math.round(Number(weather?.current?.humidityPct || 65))}%</span>
                   </div>
                   <div className="p-4 rounded-xl bg-[#F9F3E6] border border-[#E8DFD0] space-y-1">
                     <span className="text-[10px] text-[#8A7E6B] block uppercase">Rain Chance</span>
@@ -1344,7 +1348,7 @@ export default function SingleCropPage() {
                     <div className="p-4 rounded-xl bg-[#F9F3E6] border border-[#E8DFD0] space-y-2">
                       <div className="flex justify-between text-xs">
                         <span className="text-[#8A7E6B] uppercase font-medium">Soil Temperature</span>
-                        <span className="font-bold text-sm text-[#2D2A26]">{liveIot.temp}°C</span>
+                        <span className="font-bold text-sm text-[#2D2A26]">{Number(liveIot.temp).toFixed(1)}°C</span>
                       </div>
                       <input
                         type="range"
