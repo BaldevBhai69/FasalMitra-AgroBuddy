@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const CreateFarmerCropSchema = z.object({
-  cropCatalogId: z.string().uuid('Invalid Crop Catalog ID format'),
+  cropCatalogId: z.string().min(1, 'Crop Catalog ID is required'),
   customCropName: z.string().max(100).optional().nullable(),
   landSizeAcres: z.number().positive('Land size must be greater than 0 acres').max(100000, 'Land size is unreasonably large'),
   sowingDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Sowing date must be in YYYY-MM-DD format'),

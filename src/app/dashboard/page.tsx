@@ -19,26 +19,26 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [cropToDelete, setCropToDelete] = useState<string | null>(null);
 
-  // Check auth and load saved crops scoped to the active user profile
+  // Check auth and load saved crops scoped to the active user profile from Supabase
   useEffect(() => {
     if (!isAuthenticated) {
       setShowAuthModal(true);
+      return;
     }
 
-    try {
-      if (!profile) {
-        setCrops([]);
-        return;
-      }
+    if (!profile) {
+      setCrops([]);
+      return;
+    }
 
-      // Load crops specifically for this user
+    const isDemo = (
+      profile.email?.toLowerCase().includes('ramesh') ||
+      profile.id === 'demo-farmer-id'
+    );
+
+    if (isDemo) {
       const userKey = `fasalmitra_crops_${profile.email || profile.id}`;
       const savedUserCrops = localStorage.getItem(userKey);
-
-      const isDemo = (
-        profile.email?.toLowerCase().includes('ramesh') ||
-        profile.id === 'demo-farmer-id'
-      );
 
       if (savedUserCrops) {
         try {
@@ -46,7 +46,7 @@ export default function DashboardPage() {
         } catch {
           setCrops([]);
         }
-      } else if (isDemo) {
+      } else {
         // Pre-populate Ramesh Kumar Patel (Malihabad, Lucknow) with 36-day-old Tomato Crop
         const sowingDate36DaysAgo = new Date(Date.now() - 36 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
         const harvestDate = new Date(Date.now() + 54 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -89,25 +89,105 @@ export default function DashboardPage() {
 
         setCrops([demoTomatoCrop]);
         localStorage.setItem(userKey, JSON.stringify([demoTomatoCrop]));
-      } else {
-        // Clean empty state for new user
-        setCrops([]);
       }
-    } finally {
       setLoading(false);
+    } else {
+      // Real authenticated farmer: fetch live from Supabase API
+      fetch('/api/v1/crops')
+        .then((r) => r.json())
+        .then((res) => {
+          if (res?.data && Array.isArray(res.data)) {
+            setCrops(res.data);
+            const userKey = `fasalmitra_crops_${profile.email || profile.id}`;
+            localStorage.setItem(userKey, JSON.stringify(res.data));
+          } else {
+            const userKey = `fasalmitra_crops_${profile.email || profile.id}`;
+            const saved = localStorage.getItem(userKey);
+            if (saved) {
+              try { setCrops(JSON.parse(saved)); } catch { setCrops([]); }
+            } else {
+              setCrops([]);
+            }
+          }
+        })
+        .catch((err) => {
+          console.warn('Failed to load crops from Supabase server:', err);
+          const userKey = `fasalmitra_crops_${profile.email || profile.id}`;
+          const saved = localStorage.getItem(userKey);
+          if (saved) {
+            try { setCrops(JSON.parse(saved)); } catch { setCrops([]); }
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [isAuthenticated, profile]);
 
-  const handleAddCrop = (newCrop: FarmerCropDetail) => {
-    const updated = [...crops, newCrop];
-    setCrops(updated);
-    if (profile) {
-      const userKey = `fasalmitra_crops_${profile.email || profile.id}`;
+  const handleAddCrop = async (newCrop: FarmerCropDetail) => {
+    const isDemo = (
+      profile?.email?.toLowerCase().includes('ramesh') ||
+      profile?.id === 'demo-farmer-id'
+    );
+
+    if (isDemo) {
+      const updated = [...crops, newCrop];
+      setCrops(updated);
+      const userKey = `fasalmitra_crops_${profile?.email || profile?.id}`;
       localStorage.setItem(userKey, JSON.stringify(updated));
+      return;
+    }
+
+    try {
+      // Persist to Supabase backend API
+      const res = await fetch('/api/v1/crops', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cropCatalogId: newCrop.crop_catalog_id,
+          customCropName: newCrop.custom_crop_name,
+          landSizeAcres: newCrop.land_size_acres,
+          sowingDate: newCrop.sowing_date,
+          expectedHarvestDate: newCrop.expected_harvest_date,
+          irrigationSource: newCrop.irrigation_source,
+          notes: newCrop.notes,
+        }),
+      });
+
+      const json = await res.json();
+      if (json?.data) {
+        const persistedCrop = json.data;
+        const updated = [...crops, persistedCrop];
+        setCrops(updated);
+        const userKey = `fasalmitra_crops_${profile?.email || profile?.id}`;
+        localStorage.setItem(userKey, JSON.stringify(updated));
+      } else {
+        const updated = [...crops, newCrop];
+        setCrops(updated);
+      }
+    } catch (err) {
+      console.warn('Failed to persist crop to Supabase:', err);
+      const updated = [...crops, newCrop];
+      setCrops(updated);
     }
   };
 
-  const handleDeleteCrop = (cropId: string) => {
+  const handleDeleteCrop = async (cropId: string) => {
+    const isDemo = (
+      profile?.email?.toLowerCase().includes('ramesh') ||
+      profile?.id === 'demo-farmer-id'
+    );
+
+    if (!isDemo && !cropId.startsWith('demo-')) {
+      try {
+        await fetch(`/api/v1/crops/${cropId}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('Failed to delete crop from Supabase:', err);
+      }
+    }
+
     const updated = crops.filter((c) => c.id !== cropId);
     setCrops(updated);
     if (profile) {

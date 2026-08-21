@@ -165,6 +165,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const { login, register } = useAuth();
   const [mode, setMode] = useState<'register' | 'login'>('register');
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Form fields
   const [fullName, setFullName] = useState('');
@@ -235,19 +236,33 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
     setLoading(true);
 
     try {
       if (mode === 'login') {
-        await login(email || 'farmer@fasalmitra.in', password);
+        if (!email.trim()) {
+          throw new Error('Please enter your registered email address.');
+        }
+        if (!password) {
+          throw new Error('Please enter your password.');
+        }
+        await login(email.trim(), password);
       } else {
+        if (!email.trim()) {
+          throw new Error('Please enter an email address.');
+        }
+        if (!password || password.length < 6) {
+          throw new Error('Password must be at least 6 characters long.');
+        }
+
         const detectedSoilName = autoSoil.hindiName
           ? `${autoSoil.soilType} (${autoSoil.hindiName})`
           : autoSoil.soilType;
 
         const profileData: Omit<FarmerProfile, 'id'> = {
           fullName: fullName.trim() || 'Kisan Mitra',
-          email: email.trim() || 'farmer@fasalmitra.in',
+          email: email.trim(),
           state,
           district: district.trim() || 'Lucknow',
           village: village.trim() || 'Gram Panchayat',
@@ -259,6 +274,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         await register(profileData, password);
       }
       if (onClose) onClose();
+    } catch (err: any) {
+      setErrorMessage(err?.message || 'Authentication failed. Please verify your credentials.');
     } finally {
       setLoading(false);
     }
@@ -267,12 +284,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleDemoFill = () => {
     setFullName('Ramesh Kumar Patel');
     setEmail('ramesh.patel@fasalmitra.in');
+    setPassword('Ramesh@123');
     setState('Uttar Pradesh');
     setDistrict('Lucknow');
     setVillage('Malihabad');
     setTotalLandAcres('6.5');
     setLanguage('hi');
     setEngine('ollama');
+    setErrorMessage(null);
   };
 
   return (
@@ -292,15 +311,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <p className="text-xs text-[#8A7E6B]">
             {mode === 'register'
               ? 'Set up your farm profile for personalized agronomic intelligence'
-              : 'Sign in to your dashboard'}
+              : 'Sign in with your email and password'}
           </p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="relative z-10 grid grid-cols-2 p-1 mb-6 rounded-xl bg-[#F9F3E6] border border-[#E8DFD0]">
+        <div className="relative z-10 grid grid-cols-2 p-1 mb-4 rounded-xl bg-[#F9F3E6] border border-[#E8DFD0]">
           <button
             type="button"
-            onClick={() => setMode('register')}
+            onClick={() => {
+              setMode('register');
+              setErrorMessage(null);
+            }}
             className={`py-2 text-xs font-bold rounded-lg transition-all ${
               mode === 'register'
                 ? 'bg-[#FEBA17] text-[#14160C] shadow-sm'
@@ -311,7 +333,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </button>
           <button
             type="button"
-            onClick={() => setMode('login')}
+            onClick={() => {
+              setMode('login');
+              setErrorMessage(null);
+            }}
             className={`py-2 text-xs font-bold rounded-lg transition-all ${
               mode === 'login'
                 ? 'bg-[#FEBA17] text-[#14160C] shadow-sm'
@@ -321,6 +346,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             Sign In
           </button>
         </div>
+
+        {/* Error Alert Banner */}
+        {errorMessage && (
+          <div className="relative z-10 mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2 animate-in fade-in duration-200">
+            <svg className="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div className="flex-1 font-medium leading-relaxed">{errorMessage}</div>
+          </div>
+        )}
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="relative z-10 space-y-4">
@@ -342,11 +377,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <div className="space-y-1">
                   <label className="text-[11px] font-medium text-[#8A7E6B]">Email *</label>
                   <input
-                    type="text"
+                    type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ramesh@gmail.com"
+                    placeholder="farmer@gmail.com"
                     className="w-full bg-[#F9F3E6] border border-[#E8DFD0] rounded-xl px-3.5 py-2.5 text-xs text-[#2D2A26] placeholder-[#8A7E6B]/50 focus:outline-none focus:border-[#FEBA17] transition"
                   />
                 </div>
@@ -354,12 +389,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
               {/* Password */}
               <div className="space-y-1">
-                <label className="text-[11px] font-medium text-[#8A7E6B]">Password (Optional)</label>
+                <label className="text-[11px] font-medium text-[#8A7E6B]">Password (Min 6 Characters) *</label>
                 <input
                   type="password"
+                  required
+                  minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Create a secure password"
                   className="w-full bg-[#F9F3E6] border border-[#E8DFD0] rounded-xl px-3.5 py-2.5 text-xs text-[#2D2A26] placeholder-[#8A7E6B]/50 focus:outline-none focus:border-[#FEBA17] transition"
                 />
               </div>

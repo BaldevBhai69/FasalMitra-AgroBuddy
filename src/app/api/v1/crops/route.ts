@@ -102,16 +102,40 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validated = CreateFarmerCropSchema.parse(body);
 
-    // Verify crop catalog exists
-    const { data: catalogItem, error: catalogErr } = await supabase
-      .from('crop_catalog')
-      .select('id, duration_days_max')
-      .eq('id', validated.cropCatalogId)
-      .single();
+    // Resolve crop catalog item (handles both database UUIDs and frontend preset slugs)
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(validated.cropCatalogId);
+    let catalogItem: any = null;
 
-    if (catalogErr || !catalogItem) {
+    if (isUuid) {
+      const { data } = await supabase
+        .from('crop_catalog')
+        .select('*')
+        .eq('id', validated.cropCatalogId)
+        .maybeSingle();
+      catalogItem = data;
+    } else {
+      const nameGuess = validated.cropCatalogId.replace(/^cat-/, '').toLowerCase();
+      const { data } = await supabase
+        .from('crop_catalog')
+        .select('*')
+        .ilike('name', `%${nameGuess}%`)
+        .limit(1);
+      catalogItem = data?.[0];
+
+      if (!catalogItem) {
+        const { data: firstCrop } = await supabase
+          .from('crop_catalog')
+          .select('*')
+          .limit(1);
+        catalogItem = firstCrop?.[0];
+      }
+    }
+
+    if (!catalogItem) {
       throw ApiError.badRequest('Selected crop does not exist in master catalog');
     }
+
+    const resolvedCatalogId = catalogItem.id;
 
     // Auto-calculate expected harvest date if omitted
     let expectedHarvest = validated.expectedHarvestDate;
@@ -124,8 +148,8 @@ export async function POST(request: Request) {
     const { data: createdCrop, error: insertErr } = await (supabase.from('farmer_crops') as any)
       .insert({
         farmer_id: user.id,
-        crop_catalog_id: validated.cropCatalogId,
-        custom_crop_name: validated.customCropName,
+        crop_catalog_id: resolvedCatalogId,
+        custom_crop_name: validated.customCropName || `${catalogItem.name} Crop`,
         land_size_acres: validated.landSizeAcres,
         sowing_date: validated.sowingDate,
         expected_harvest_date: expectedHarvest,

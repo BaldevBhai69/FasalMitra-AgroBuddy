@@ -207,6 +207,32 @@ export default function SingleCropPage() {
     }
   }, [cropId, profile]);
 
+  // Auto-sync IoT adjustments to Supabase backend if this is an authentic saved crop
+  useEffect(() => {
+    if (!crop || !cropId || cropId.startsWith('demo-')) return;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cropId);
+    if (!isUuid) return;
+
+    const timeout = setTimeout(() => {
+      fetch(`/api/v1/iot/${cropId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          soil_moisture_pct: liveIot.soilMoisture,
+          nitrogen_mg_kg: liveIot.nitrogen,
+          phosphorus_mg_kg: liveIot.phosphorus,
+          potassium_mg_kg: liveIot.potassium,
+          soil_ph: liveIot.soilPh,
+          soil_temperature_c: liveIot.temp,
+          organic_carbon_pct: liveIot.organicCarbon,
+          electrical_conductivity_ds_m: liveIot.electricalConductivity,
+        }),
+      }).catch((err) => console.warn('IoT sync notice:', err));
+    }, 600);
+
+    return () => clearTimeout(timeout);
+  }, [liveIot, cropId, crop]);
+
   // Ensure page starts at the top on mount / refresh
   useEffect(() => {
     if (typeof window !== 'undefined') {

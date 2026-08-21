@@ -246,7 +246,7 @@ export async function POST(request: Request) {
     }
 
     // =========================================================================
-    // 2. ACTION: REGISTER / UPDATE (Save or update farmer profile with instant geocoding & live soil fetch)
+    // 2. ACTION: REGISTER (Create new farmer user & profile with strict password & conflict check)
     // =========================================================================
     const {
       fullName,
@@ -289,32 +289,43 @@ export async function POST(request: Request) {
 
     if (adminClient) {
       try {
-        // Find existing or create user in auth.users
+        // Find existing user in auth.users
         const { data: userList } = await adminClient.auth.admin.listUsers();
         const existingUser = userList?.users?.find(
           (u: any) => u.email?.toLowerCase() === email
         );
 
-        if (existingUser) {
-          userId = existingUser.id;
-          if (password || fullName || state) {
-            await adminClient.auth.admin.updateUserById(userId, {
-              ...(password ? { password } : {}),
-              user_metadata: {
-                ...(fullName ? { full_name: fullName } : {}),
-                ...(state ? { state } : {}),
-                ...(district ? { district } : {}),
-                ...(actualVillage ? { village_locality: actualVillage } : {}),
-                latitude: resolvedCoords.lat,
-                longitude: resolvedCoords.lon,
+        if (action === 'register') {
+          if (existingUser) {
+            return NextResponse.json(
+              {
+                success: false,
+                error: {
+                  message: 'An account with this email address already exists. Please sign in instead.',
+                  code: 'USER_ALREADY_EXISTS',
+                },
               },
-            });
+              { status: 409 }
+            );
           }
-        } else {
-          const username = `farmer_${email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '_')}`;
-          const { data: newUser } = await adminClient.auth.admin.createUser({
+
+          if (!password || password.length < 6) {
+            return NextResponse.json(
+              {
+                success: false,
+                error: {
+                  message: 'Password is required and must be at least 6 characters long.',
+                  code: 'INVALID_PASSWORD',
+                },
+              },
+              { status: 400 }
+            );
+          }
+
+          const username = `farmer_${email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '_')}_${Date.now().toString().slice(-4)}`;
+          const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
             email,
-            password: password || 'FasalMitra@2026',
+            password,
             email_confirm: true,
             user_metadata: {
               full_name: fullName || 'Farmer',
@@ -327,8 +338,24 @@ export async function POST(request: Request) {
             },
           });
 
-          if (newUser?.user) {
-            userId = newUser.user.id;
+          if (createError || !newUser?.user) {
+            return NextResponse.json(
+              {
+                success: false,
+                error: {
+                  message: createError?.message || 'Failed to create user in authentication server.',
+                  code: 'AUTH_CREATE_FAILED',
+                },
+              },
+              { status: 400 }
+            );
+          }
+
+          userId = newUser.user.id;
+        } else {
+          // action === 'sync' or profile update
+          if (existingUser) {
+            userId = existingUser.id;
           }
         }
 
