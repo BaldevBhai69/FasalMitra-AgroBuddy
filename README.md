@@ -2,7 +2,7 @@
 
 > **Precision Agronomy, Virtual IoT Digital Twin, Mandi Market Intelligence & Dual-Engine AI Advisor**
 
-Built with **Next.js 15 App Router**, **TypeScript**, **Supabase (PostgreSQL with RLS & Supavisor Port 6543)**, **Google Gemini 2.0 Flash**, and **Local Ollama Edge Inference on RTX 4050 GPU**.
+Built with **Next.js 15 App Router**, **TypeScript**, **Supabase (PostgreSQL with RLS & Supavisor Port 6543)**, **Google Gemini 3.6 Flash**, and **Local Ollama Edge Inference on RTX 4050 GPU**.
 
 ---
 
